@@ -1,0 +1,136 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CargoController;
+use App\Http\Controllers\LiderIglesiaController;
+use App\Http\Controllers\MiembroController;
+use App\Http\Controllers\MinisterioController;
+use App\Http\Controllers\ActividadController;
+use App\Http\Controllers\SeguimientoActividadController;
+use App\Http\Controllers\CursoController;
+use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\SesionController;
+use App\Http\Controllers\CultoController;
+use App\Http\Controllers\IngresoController;
+use App\Http\Controllers\EgresoController;
+use App\Http\Controllers\ContratoController;
+use App\Http\Controllers\MovimientoFinancieroController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PagoCursoController;
+use App\Http\Controllers\InscripcionController;
+use App\Http\Controllers\AsistenciaController;
+
+// Ruta de inicio redirige al login o dashboard
+Route::get('/', function () {
+    return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
+});
+
+// Rutas de Autenticación (Invitados)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
+});
+
+// Rutas Protegidas por Autenticación
+Route::middleware(['auth', 'prevent-back-history'])->group(function () {
+    // Logout
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Acceso y Seguridad
+    Route::post('users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
+    Route::resource('users', UserController::class);
+    Route::get('roles/assign', [RoleController::class, 'userRoles'])->name('roles.user');
+    Route::post('roles/assign', [RoleController::class, 'assignRole'])->name('roles.user.save');
+    Route::post('roles/assign/{id}/clear', [RoleController::class, 'clearUserRoles'])->name('roles.user.clear');
+    Route::post('roles/{id}/restore', [RoleController::class, 'restore'])->name('roles.restore');
+    Route::resource('roles', RoleController::class);
+
+    // 1. Cargos
+    Route::post('cargos/{id}/restore', [CargoController::class, 'restore'])->name('cargos.restore');
+    Route::resource('cargos', CargoController::class);
+
+    // 2. Líderes de Iglesia
+    Route::post('lideres/{id}/restore', [LiderIglesiaController::class, 'restore'])->name('lideres.restore');
+    Route::resource('lideres', LiderIglesiaController::class);
+
+    // 3. Miembros
+    Route::post('miembros/{id}/restore', [MiembroController::class, 'restore'])->name('miembros.restore');
+    Route::resource('miembros', MiembroController::class);
+
+    // 4. Ministerios
+    Route::post('ministerios/{id}/restore', [MinisterioController::class, 'restore'])->name('ministerios.restore');
+    Route::resource('ministerios', MinisterioController::class);
+
+    // 5. Actividades
+    Route::post('actividades/{id}/restore', [ActividadController::class, 'restore'])->name('actividades.restore');
+    Route::resource('actividades', ActividadController::class);
+
+    // 6. Seguimiento de Actividades
+    Route::post('seguimiento/{id}/restore', [SeguimientoActividadController::class, 'restore'])->name('seguimiento.restore');
+    Route::resource('seguimiento', SeguimientoActividadController::class);
+
+    // 7. Cursos
+    Route::post('cursos/{id}/restore', [CursoController::class, 'restore'])->name('cursos.restore');
+    Route::resource('cursos', CursoController::class);
+
+    // 7.1 Inscripciones a Cursos (módulo aparte)
+    Route::get('inscripciones', [InscripcionController::class, 'index'])->name('inscripciones.index');
+    Route::get('inscripciones/{curso}/gestionar', [InscripcionController::class, 'gestion'])->name('inscripciones.gestion');
+    Route::get('inscripciones/{inscripcion}/edit', [InscripcionController::class, 'edit'])->name('inscripciones.edit');
+    Route::put('inscripciones/{inscripcion}', [InscripcionController::class, 'update'])->name('inscripciones.update');
+    Route::post('cursos/{curso}/inscripciones', [InscripcionController::class, 'store'])->name('inscripciones.store');
+    Route::post('inscripciones/{id}/restore', [InscripcionController::class, 'restore'])->name('inscripciones.restore');
+    Route::delete('inscripciones/{inscripcion}', [InscripcionController::class, 'destroy'])->name('inscripciones.destroy');
+
+    // 7.2 Pagos de Cursos (generan Ingreso automáticamente)
+    Route::get('inscripciones/{inscripcion}/pagos/create', [PagoCursoController::class, 'create'])->name('pagos.create');
+    Route::post('inscripciones/{inscripcion}/pagos', [PagoCursoController::class, 'store'])->name('pagos.store');
+    Route::post('pagos/{id}/restore', [PagoCursoController::class, 'restore'])->name('pagos.restore');
+    Route::delete('pagos/{pago}', [PagoCursoController::class, 'destroy'])->name('pagos.destroy');
+
+    // 8. Docentes
+    Route::post('docentes/{id}/restore', [DocenteController::class, 'restore'])->name('docentes.restore');
+    Route::resource('docentes', DocenteController::class);
+
+    // 9. Sesiones
+    Route::post('cursos/{curso}/sesiones/generar', [SesionController::class, 'generar'])->name('sesiones.generar');
+    Route::post('sesiones/{sesion}/asistencia', [AsistenciaController::class, 'store'])->name('asistencia.store');
+    Route::post('sesiones/{sesion}/asistencia/marcar-todos', [AsistenciaController::class, 'marcarTodos'])->name('asistencia.marcarTodos');
+    Route::get('miembros/{miembroId}/asistencia', [AsistenciaController::class, 'historial'])->name('asistencia.historial');
+    Route::post('sesiones/{id}/restore', [SesionController::class, 'restore'])->name('sesiones.restore');
+    Route::resource('sesiones', SesionController::class);
+
+    // 9b. Asistencia (módulo propio)
+    Route::get('asistencia', [AsistenciaController::class, 'index'])->name('asistencia.index');
+
+    // 10. Cultos
+    Route::post('cultos/{id}/restore', [CultoController::class, 'restore'])->name('cultos.restore');
+    Route::resource('cultos', CultoController::class);
+
+    // 11. Ingresos
+    Route::post('ingresos/{id}/restore', [IngresoController::class, 'restore'])->name('ingresos.restore');
+    Route::resource('ingresos', IngresoController::class);
+
+    // 12. Egresos
+    Route::post('egresos/{id}/restore', [EgresoController::class, 'restore'])->name('egresos.restore');
+    Route::resource('egresos', EgresoController::class);
+
+    // 13. Contratos
+    Route::get('contratos/{id}/renovar', [ContratoController::class, 'renovar'])->name('contratos.renovar');
+    Route::post('contratos/{id}/restore', [ContratoController::class, 'restore'])->name('contratos.restore');
+    Route::resource('contratos', ContratoController::class);
+
+    // 14. Movimientos Financieros
+    Route::post('movimientos/{id}/restore', [MovimientoFinancieroController::class, 'restore'])->name('movimientos.restore');
+    Route::resource('movimientos', MovimientoFinancieroController::class);
+});
