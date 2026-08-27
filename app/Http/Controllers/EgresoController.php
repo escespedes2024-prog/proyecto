@@ -31,7 +31,7 @@ class EgresoController extends Controller
 
     public function show($id)
     {
-        $egreso = Egreso::with(['liderIglesia', 'contrato', 'movimientos'])->withTrashed()->findOrFail($id);
+        $egreso = Egreso::with(['liderIglesia', 'contrato'])->withTrashed()->findOrFail($id);
         return view('egresos.show', compact('egreso'));
     }
 

@@ -8,10 +8,23 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::create('pago_cursos', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('inscripcion_id')->constrained('inscripciones')->onDelete('cascade');
+            $table->decimal('monto', 10, 2);
+            $table->date('fecha_pago');
+            $table->string('metodo_pago');
+            $table->string('comprobante')->nullable();
+            $table->foreignId('registrado_por')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('ingresos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_actividad')->nullable()->constrained('actividades')->onDelete('set null');
             $table->foreignId('id_culto')->nullable()->constrained('cultos')->onDelete('set null');
+            $table->foreignId('pago_curso_id')->nullable()->constrained('pago_cursos')->onDelete('set null');
             $table->decimal('monto_total', 12, 2);
             $table->date('fecha');
             $table->string('tipo'); // Diezmo, Ofrenda, Donación, Inscripción, etc.
@@ -33,25 +46,12 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
-        Schema::create('movimientos_financieros', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('id_ingreso')->nullable()->constrained('ingresos')->onDelete('set null');
-            $table->foreignId('id_egreso')->nullable()->constrained('egresos')->onDelete('set null');
-            $table->string('tipo'); // Ingreso, Egreso
-            $table->decimal('monto', 12, 2);
-            $table->date('fecha');
-            $table->string('concepto');
-            $table->string('mes_ano', 7); // Formato YYYY-MM
-            $table->timestamps();
-            $table->softDeletes();
-        });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('movimientos_financieros');
         Schema::dropIfExists('egresos');
         Schema::dropIfExists('ingresos');
+        Schema::dropIfExists('pago_cursos');
     }
 };

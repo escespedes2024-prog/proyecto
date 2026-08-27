@@ -9,7 +9,8 @@
 <body>
     @php
         $accesoActive = Request::is('users*') || Request::is('roles*');
-        $paramActive = Request::is('miembros*') || Request::is('cultos*') || Request::is('actividades*') || Request::is('cursos*') || Request::is('cargos*') || Request::is('lideres*') || Request::is('ministerios*');
+        $paramActive = Request::is('miembros*') || Request::is('cultos*') || Request::is('actividades*') || Request::is('cursos*') || Request::is('cargos*') || Request::is('lideres*') || Request::is('ministerios*') || Request::is('docentes*') || Request::is('seguimiento*');
+        $transacActive = Request::is('inscripciones*') || Request::is('asistencia*') || Request::is('sesiones*') || Request::is('ingresos*');
     @endphp
 
     <div class="app-container">
@@ -73,42 +74,45 @@
                         <li class="nav-item {{ Request::is('ministerios*') ? 'active' : '' }}">
                             <a href="{{ route('ministerios.index') }}"><span>🛡️ Ministerio</span></a>
                         </li>
+                        <li class="nav-item {{ Request::is('docentes*') ? 'active' : '' }}">
+                            <a href="{{ route('docentes.index') }}"><span>🎓 Docentes</span></a>
+                        </li>
+                        <li class="nav-item {{ Request::is('seguimiento*') ? 'active' : '' }}">
+                            <a href="{{ route('seguimiento.index') }}"><span>📈 Seguimiento</span></a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Transaccional -->
+                <li class="nav-category">
+                    <div class="nav-category-header {{ $transacActive ? 'expanded' : '' }}" onclick="toggleSubmenu('submenu-transac', this)">
+                        <span>🔄 Transaccional</span>
+                        <span class="caret">▶</span>
+                    </div>
+                    <ul class="submenu {{ $transacActive ? 'expanded' : '' }}" id="submenu-transac">
+                        <li class="nav-item {{ Request::is('sesiones*') ? 'active' : '' }}">
+                            <a href="{{ route('sesiones.index') }}"><span>⏳ Sesiones</span></a>
+                        </li>
+                        <li class="nav-item {{ Request::is('inscripciones*') ? 'active' : '' }}">
+                            <a href="{{ route('inscripciones.index') }}"><span>📝 Inscripciones</span></a>
+                        </li>
+                        <li class="nav-item {{ Request::is('asistencia*') ? 'active' : '' }}">
+                            <a href="{{ route('asistencia.index') }}"><span>📋 Asistencia</span></a>
+                        </li>
+                        <li class="nav-item {{ Request::is('ingresos*') ? 'active' : '' }}">
+                            <a href="{{ route('ingresos.index') }}"><span>💵 Ingresos</span></a>
+                        </li>
                     </ul>
                 </li>
 
                 <li style="margin: 15px 0 5px 16px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 700; letter-spacing: 1px;">
-                    Operaciones y Seguimiento
-                </li>
-                <li class="nav-item {{ Request::is('seguimiento*') ? 'active' : '' }}">
-                    <a href="{{ route('seguimiento.index') }}"><span>📈 Seguimiento</span></a>
-                </li>
-                <li class="nav-item {{ Request::is('docentes*') ? 'active' : '' }}">
-                    <a href="{{ route('docentes.index') }}"><span>🎓 Docentes</span></a>
-                </li>
-                <li class="nav-item {{ Request::is('inscripciones*') ? 'active' : '' }}">
-                    <a href="{{ route('inscripciones.index') }}"><span>📝 Inscripciones</span></a>
-                </li>
-                <li class="nav-item {{ Request::is('sesiones*') ? 'active' : '' }}">
-                    <a href="{{ route('sesiones.index') }}"><span>⏳ Sesiones</span></a>
-                </li>
-                <li class="nav-item {{ Request::is('asistencia*') ? 'active' : '' }}">
-                    <a href="{{ route('asistencia.index') }}"><span>📋 Asistencia</span></a>
-                </li>
-
-                <li style="margin: 15px 0 5px 16px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 700; letter-spacing: 1px;">
                     Administración y Finanzas
-                </li>
-                <li class="nav-item {{ Request::is('ingresos*') ? 'active' : '' }}">
-                    <a href="{{ route('ingresos.index') }}"><span>💵 Ingresos</span></a>
                 </li>
                 <li class="nav-item {{ Request::is('egresos*') ? 'active' : '' }}">
                     <a href="{{ route('egresos.index') }}"><span>💸 Egresos</span></a>
                 </li>
                 <li class="nav-item {{ Request::is('contratos*') ? 'active' : '' }}">
                     <a href="{{ route('contratos.index') }}"><span>📝 Contratos</span></a>
-                </li>
-                <li class="nav-item {{ Request::is('movimientos*') ? 'active' : '' }}">
-                    <a href="{{ route('movimientos.index') }}"><span>📊 Movimientos Fin.</span></a>
                 </li>
             </ul>
         </aside>

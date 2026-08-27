@@ -6,6 +6,9 @@
 <div class="glass-panel" style="padding: 30px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="font-weight: 700; color: var(--text-primary);">Asistencia General</h2>
+        <a href="{{ route('asistencia.registrar') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">
+            ✏️ Tomar Asistencia
+        </a>
     </div>
 
     <!-- Filtros -->

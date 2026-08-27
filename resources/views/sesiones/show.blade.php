@@ -5,21 +5,11 @@
 @section('content')
 <div class="glass-panel" style="padding: 30px;">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 25px;">
-        <h2 style="font-weight: 700; color: var(--text-primary); margin: 0;">Asistencia: {{ $sesion->curso->nombre ?? 'N/A' }}</h2>
+        <h2 style="font-weight: 700; color: var(--text-primary); margin: 0;">Sesión: {{ $sesion->curso->nombre ?? 'N/A' }}</h2>
         <a href="{{ route('sesiones.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">
             Volver
         </a>
     </div>
-
-    @if ($errors->any())
-        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-            <ul style="color: #ef4444; margin: 0; padding-left: 18px;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
     <!-- Datos de la sesión -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px;">
@@ -43,7 +33,7 @@
         @endforeach
     </div>
 
-    <!-- Resumen de asistencia registrada -->
+    <!-- Resumen de asistencia -->
     @if($asistencias->count())
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 25px;">
             <div style="background: rgba(52, 211, 153, 0.08); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 10px; padding: 12px 15px;">
@@ -59,79 +49,44 @@
                 <span style="color: #22d3ee; font-weight: 700;">Justificados:</span> <strong>{{ $resumen['Justificado'] }}</strong>
             </div>
         </div>
-    @endif
 
-    <!-- Formulario de asistencia -->
-    @if($sesion->trashed())
-        <p style="text-align: center; color: var(--text-secondary); padding: 20px;">La sesión está eliminada. Restáurala para gestionar asistencia.</p>
-    @elseif($inscritos->isEmpty())
-        <p style="text-align: center; color: var(--text-secondary); padding: 20px;">
-            No hay miembros inscritos en este curso.
-            <br><br>
-            <a href="{{ route('inscripciones.gestion', $sesion->id_curso) }}" style="color: #22d3ee;">Ir a gestionar inscripciones →</a>
-        </p>
-    @else
-        <!-- Botón marcar todos presente -->
-        <div style="margin-bottom: 20px;">
-            <form method="POST" action="{{ route('asistencia.marcarTodos', $sesion->id) }}" style="display: inline;" onsubmit="return confirm('¿Marcar a todos los inscritos como PRESENTES?')">
-                @csrf
-                <button type="submit" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.85rem;">
-                    ✓ Marcar todos Presente
-                </button>
-            </form>
-        </div>
-
-        <form method="POST" action="{{ route('asistencia.store', $sesion->id) }}">
-            @csrf
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
+        <!-- Tabla de asistencia -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Miembro</th>
+                        <th>Estado</th>
+                        <th>Observación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($inscritos as $inscripcion)
+                        @php
+                            $guardada = $asistencias->get($inscripcion->miembro_id);
+                            $badgeEstado = match($guardada?->estado ?? 'Sin registro') {
+                                'Presente' => 'badge-active',
+                                'Ausente' => 'badge-inactive',
+                                'Tardanza' => 'badge-warning',
+                                'Justificado' => 'badge-info',
+                                default => 'badge-inactive',
+                            };
+                        @endphp
                         <tr>
-                            <th>Miembro</th>
-                            <th style="text-align: center;">Presente</th>
-                            <th style="text-align: center;">Ausente</th>
-                            <th style="text-align: center;">Tardanza</th>
-                            <th style="text-align: center;">Justificado</th>
-                            <th>Observación</th>
+                            <td style="font-weight: 600;">{{ $inscripcion->miembro->nombre }}</td>
+                            <td><span class="badge {{ $badgeEstado }}">{{ $guardada?->estado ?? 'Sin registro' }}</span></td>
+                            <td>{{ $guardada?->observacion ?? '—' }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($inscritos as $inscripcion)
-                            @php
-                                $guardada = $asistencias->get($inscripcion->miembro_id);
-                                // Si la sesión ya pasó y no tiene registro, default = Ausente
-                                $defaultEstado = $guardada?->estado ?? ($sesionPasada ? 'Ausente' : 'Presente');
-                            @endphp
-                            <tr>
-                                <td style="font-weight: 600;">{{ $inscripcion->miembro->nombre }}</td>
-                                @foreach(['Presente', 'Ausente', 'Tardanza', 'Justificado'] as $estado)
-                                    <td style="text-align: center;">
-                                        <input type="radio"
-                                               name="asistencia[{{ $inscripcion->miembro_id }}][estado]"
-                                               value="{{ $estado }}"
-                                               {{ old('asistencia.' . $inscripcion->miembro_id . '.estado', $defaultEstado) === $estado ? 'checked' : '' }}
-                                               required>
-                                    </td>
-                                @endforeach
-                                <td>
-                                    <input type="text"
-                                           name="asistencia[{{ $inscripcion->miembro_id }}][observacion]"
-                                           class="form-control"
-                                           value="{{ old('asistencia.' . $inscripcion->miembro_id . '.observacion', $guardada?->observacion) }}"
-                                           placeholder="Opcional"
-                                           maxlength="255"
-                                           style="min-width: 180px;">
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <div style="margin-top: 25px;">
-                <button type="submit" class="btn">Guardar Asistencia</button>
-            </div>
-        </form>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @else
+        <p style="text-align: center; color: var(--text-secondary); padding: 30px;">
+            No hay asistencia registrada para esta sesión.
+            <br><br>
+            <a href="{{ route('asistencia.registrar', ['curso_id' => $sesion->id_curso, 'sesion_id' => $sesion->id]) }}" style="color: #22d3ee;">Tomar asistencia →</a>
+        </p>
     @endif
 </div>
 @endsection

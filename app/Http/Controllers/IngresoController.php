@@ -31,7 +31,7 @@ class IngresoController extends Controller
 
     public function show($id)
     {
-        $ingreso = Ingreso::with(['actividad', 'culto', 'movimientos'])->withTrashed()->findOrFail($id);
+        $ingreso = Ingreso::with(['actividad', 'culto'])->withTrashed()->findOrFail($id);
         return view('ingresos.show', compact('ingreso'));
     }
 

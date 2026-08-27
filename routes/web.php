@@ -16,7 +16,6 @@ use App\Http\Controllers\CultoController;
 use App\Http\Controllers\IngresoController;
 use App\Http\Controllers\EgresoController;
 use App\Http\Controllers\ContratoController;
-use App\Http\Controllers\MovimientoFinancieroController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PagoCursoController;
@@ -104,14 +103,15 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
     // 9. Sesiones
     Route::post('cursos/{curso}/sesiones/generar', [SesionController::class, 'generar'])->name('sesiones.generar');
-    Route::post('sesiones/{sesion}/asistencia', [AsistenciaController::class, 'store'])->name('asistencia.store');
-    Route::post('sesiones/{sesion}/asistencia/marcar-todos', [AsistenciaController::class, 'marcarTodos'])->name('asistencia.marcarTodos');
     Route::get('miembros/{miembroId}/asistencia', [AsistenciaController::class, 'historial'])->name('asistencia.historial');
     Route::post('sesiones/{id}/restore', [SesionController::class, 'restore'])->name('sesiones.restore');
     Route::resource('sesiones', SesionController::class);
 
     // 9b. Asistencia (módulo propio)
     Route::get('asistencia', [AsistenciaController::class, 'index'])->name('asistencia.index');
+    Route::get('asistencia/registrar', [AsistenciaController::class, 'registrar'])->name('asistencia.registrar');
+    Route::post('asistencia/registrar/{sesion}', [AsistenciaController::class, 'store'])->name('asistencia.store');
+    Route::post('asistencia/registrar/{sesion}/marcar-todos', [AsistenciaController::class, 'marcarTodos'])->name('asistencia.marcarTodos');
 
     // 10. Cultos
     Route::post('cultos/{id}/restore', [CultoController::class, 'restore'])->name('cultos.restore');
@@ -129,8 +129,4 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     Route::get('contratos/{id}/renovar', [ContratoController::class, 'renovar'])->name('contratos.renovar');
     Route::post('contratos/{id}/restore', [ContratoController::class, 'restore'])->name('contratos.restore');
     Route::resource('contratos', ContratoController::class);
-
-    // 14. Movimientos Financieros
-    Route::post('movimientos/{id}/restore', [MovimientoFinancieroController::class, 'restore'])->name('movimientos.restore');
-    Route::resource('movimientos', MovimientoFinancieroController::class);
 });

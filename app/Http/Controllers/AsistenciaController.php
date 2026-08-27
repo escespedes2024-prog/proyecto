@@ -15,11 +15,12 @@ class AsistenciaController extends Controller
     public function index(Request $request)
     {
         $asistencias = Asistencia::with(['miembro', 'sesion.curso', 'user'])
+            ->join('sesiones', 'asistencias_sesion.sesion_id', '=', 'sesiones.id')
             ->when($request->filled('q'), fn ($q) => $q->whereHas('miembro', fn ($m) => $m->where('nombre', 'like', '%' . $request->q . '%')))
             ->when($request->filled('curso_id'), fn ($q) => $q->porCurso($request->curso_id))
-            ->when($request->filled('estado'), fn ($q) => $q->where('estado', $request->estado))
-            ->when($request->filled('desde'), fn ($q) => $q->whereHas('sesion', fn ($s) => $s->where('fecha', '>=', $request->desde)))
-            ->when($request->filled('hasta'), fn ($q) => $q->whereHas('sesion', fn ($s) => $s->where('fecha', '<=', $request->hasta)))
+            ->when($request->filled('estado'), fn ($q) => $q->where('asistencias_sesion.estado', $request->estado))
+            ->when($request->filled('desde'), fn ($q) => $q->where('sesiones.fecha', '>=', $request->desde))
+            ->when($request->filled('hasta'), fn ($q) => $q->where('sesiones.fecha', '<=', $request->hasta))
             ->orderByDesc('sesiones.fecha')
             ->paginate(15)
             ->withQueryString();
@@ -52,7 +53,7 @@ class AsistenciaController extends Controller
             }
         });
 
-        return redirect()->route('sesiones.show', $sesion->id)
+        return redirect()->route('asistencia.registrar', ['curso_id' => $sesion->id_curso, 'sesion_id' => $sesion->id])
             ->with('success', 'Asistencia guardada con éxito.');
     }
 
@@ -71,8 +72,45 @@ class AsistenciaController extends Controller
             }
         });
 
-        return redirect()->route('sesiones.show', $sesion->id)
+        return redirect()->route('asistencia.registrar', ['curso_id' => $sesion->id_curso, 'sesion_id' => $sesion->id])
             ->with('success', 'Todos los inscritos marcados como presentes.');
+    }
+
+    public function registrar(Request $request)
+    {
+        $cursos = Curso::whereHas('sesiones', fn ($q) => $q->whereNull('deleted_at'))
+            ->with(['sesiones' => fn ($q) => $q->whereNull('deleted_at')->orderBy('fecha')])
+            ->orderBy('nombre')
+            ->get();
+
+        $sesion = null;
+        $inscritos = collect();
+        $asistencias = collect();
+        $resumen = ['Presente' => 0, 'Ausente' => 0, 'Tardanza' => 0, 'Justificado' => 0];
+
+        if ($request->filled('sesion_id')) {
+            $sesion = Sesion::with('curso', 'docente.miembro')->find($request->sesion_id);
+
+            if ($sesion) {
+                $inscritos = Inscripcion::where('curso_id', $sesion->id_curso)
+                    ->whereNull('deleted_at')
+                    ->with('miembro')
+                    ->get();
+
+                $asistencias = Asistencia::where('sesion_id', $sesion->id)
+                    ->get()
+                    ->keyBy('miembro_id');
+
+                $resumen = [
+                    'Presente' => $asistencias->where('estado', 'Presente')->count(),
+                    'Ausente' => $asistencias->where('estado', 'Ausente')->count(),
+                    'Tardanza' => $asistencias->where('estado', 'Tardanza')->count(),
+                    'Justificado' => $asistencias->where('estado', 'Justificado')->count(),
+                ];
+            }
+        }
+
+        return view('asistencia.registrar', compact('cursos', 'sesion', 'inscritos', 'asistencias', 'resumen'));
     }
 
     public function historial(int $miembroId)
