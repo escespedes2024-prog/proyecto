@@ -11,7 +11,7 @@ class CargoController extends Controller
     public function index()
     {
         // Paginación y soporte para ver elementos eliminados
-        $cargos = Cargo::withTrashed()->paginate(10);
+        $cargos = Cargo::paginate(10);
         return view('cargos.index', compact('cargos'));
     }
 

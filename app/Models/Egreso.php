@@ -13,7 +13,6 @@ class Egreso extends Model
     protected $table = 'egresos';
 
     protected $fillable = [
-        'id_lider_iglesia',
         'id_contrato',
         'tipo_egreso',
         'monto',
@@ -23,13 +22,20 @@ class Egreso extends Model
         'comprobante',
     ];
 
-    public function liderIglesia(): BelongsTo
-    {
-        return $this->belongsTo(LiderIglesia::class, 'id_lider_iglesia');
-    }
-
     public function contrato(): BelongsTo
     {
         return $this->belongsTo(Contrato::class, 'id_contrato');
+    }
+
+    public function liderIglesia()
+    {
+        return $this->hasOneThrough(
+            LiderIglesia::class,
+            Contrato::class,
+            'id',
+            'id',
+            'id_contrato',
+            'id_lider_iglesia'
+        );
     }
 }

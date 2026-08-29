@@ -22,7 +22,6 @@ class ContratoController extends Controller
             ELSE 'vigente' END";
 
         $contratos = Contrato::with(['miembro', 'lider.cargo'])
-            ->withTrashed()
             ->when($request->filled('q'), fn ($q) => $q->whereHas('miembro', fn ($m) => $m->where('nombre', 'like', '%' . $request->q . '%')))
             ->when($request->filled('tipo_compensacion'), fn ($q) => $q->where('tipo_compensacion', $request->tipo_compensacion))
             ->when($request->filled('estado'), fn ($q) => $q->whereRaw("$expresionVigencia = ?", [$request->estado]))

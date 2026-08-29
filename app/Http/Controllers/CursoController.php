@@ -12,7 +12,7 @@ class CursoController extends Controller
 {
     public function index()
     {
-        $cursos = Curso::withTrashed()->paginate(10);
+        $cursos = Curso::paginate(10);
         return view('cursos.index', compact('cursos'));
     }
 

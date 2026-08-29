@@ -19,7 +19,7 @@ class ActividadRequest extends FormRequest
             'fecha' => 'required|date',
             'lugar' => 'nullable|string|max:255',
             'descripcion' => 'nullable|string',
-            'estado' => 'required|string|max:100',
+            'estado' => 'required|string|in:Programado,En Progreso,Completado,Cancelado',
         ];
     }
 }

@@ -20,4 +20,19 @@ class MinisterioRequest extends FormRequest
             'liderable_type' => 'nullable|string|in:App\Models\Miembro,App\Models\LiderIglesia',
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $type = $this->input('liderable_type');
+            $id = $this->input('liderable_id');
+
+            if ($type && $id) {
+                $tabla = $type === 'App\Models\Miembro' ? 'miembros' : 'lideres_iglesia';
+                if (!\DB::table($tabla)->where('id', $id)->exists()) {
+                    $validator->errors()->add('liderable_id', 'El líder seleccionado no existe.');
+                }
+            }
+        });
+    }
 }

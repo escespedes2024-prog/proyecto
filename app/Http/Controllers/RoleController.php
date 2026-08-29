@@ -10,7 +10,7 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $roles = Role::withTrashed()->paginate(10);
+        $roles = Role::paginate(10);
         return view('roles.index', compact('roles'));
     }
 
@@ -80,7 +80,7 @@ class RoleController extends Controller
     // rol_usuario view: list users and roles for assignment
     public function userRoles()
     {
-        $users = User::with('roles')->withTrashed()->paginate(10);
+        $users = User::with('roles')->paginate(10);
         $roles = Role::all();
         return view('roles.user_roles', compact('users', 'roles'));
     }

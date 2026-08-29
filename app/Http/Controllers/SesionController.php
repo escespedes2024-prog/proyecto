@@ -15,7 +15,7 @@ class SesionController extends Controller
 {
     public function index()
     {
-        $sesiones = Sesion::with(['curso', 'docente'])->withTrashed()->paginate(10);
+        $sesiones = Sesion::with(['curso', 'docente'])->paginate(10);
         return view('sesiones.index', compact('sesiones'));
     }
 
@@ -37,7 +37,7 @@ class SesionController extends Controller
             'id_curso' => 'required|exists:cursos,id',
             'id_docente' => 'nullable|exists:docentes,id',
             'fecha' => 'required|date',
-            'hora' => 'required',
+            'hora' => 'required|date_format:H:i',
             'tema' => 'required|string|max:255',
             'observacion' => 'nullable|string',
         ]);
@@ -103,7 +103,7 @@ class SesionController extends Controller
             'id_curso' => 'required|exists:cursos,id',
             'id_docente' => 'nullable|exists:docentes,id',
             'fecha' => 'required|date',
-            'hora' => 'required',
+            'hora' => 'required|date_format:H:i',
             'tema' => 'required|string|max:255',
             'observacion' => 'nullable|string',
         ]);

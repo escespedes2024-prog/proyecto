@@ -10,7 +10,7 @@ class CultoController extends Controller
 {
     public function index()
     {
-        $cultos = Culto::with('liderIglesia')->withTrashed()->paginate(10);
+        $cultos = Culto::with('liderIglesia')->paginate(10);
         return view('cultos.index', compact('cultos'));
     }
 
@@ -25,8 +25,8 @@ class CultoController extends Controller
         $validated = $request->validate([
             'id_lider_iglesia' => 'required|exists:lideres_iglesia,id',
             'nombre' => 'required|string|max:255',
-            'dia_semana' => 'required|string|max:20',
-            'hora' => 'required',
+            'dia_semana' => 'required|string|in:Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
+            'hora' => 'required|date_format:H:i',
             'descripcion' => 'nullable|string',
         ]);
 
@@ -54,8 +54,8 @@ class CultoController extends Controller
         $validated = $request->validate([
             'id_lider_iglesia' => 'required|exists:lideres_iglesia,id',
             'nombre' => 'required|string|max:255',
-            'dia_semana' => 'required|string|max:20',
-            'hora' => 'required',
+            'dia_semana' => 'required|string|in:Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
+            'hora' => 'required|date_format:H:i',
             'descripcion' => 'nullable|string',
         ]);
 

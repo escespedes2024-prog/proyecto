@@ -12,7 +12,7 @@ class MinisterioController extends Controller
 {
     public function index()
     {
-        $ministerios = Ministerio::with('liderable')->withTrashed()->paginate(10);
+        $ministerios = Ministerio::with('liderable')->paginate(10);
         return view('ministerios.index', compact('ministerios'));
     }
 

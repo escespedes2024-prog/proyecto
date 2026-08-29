@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ingreso;
+use App\Models\Egreso;
 use App\Models\Actividad;
 use App\Models\Culto;
 use App\Http\Requests\IngresoRequest;
@@ -12,8 +13,15 @@ class IngresoController extends Controller
 {
     public function index()
     {
-        $ingresos = Ingreso::with(['actividad', 'culto'])->withTrashed()->paginate(10);
-        return view('ingresos.index', compact('ingresos'));
+        $ingresos = Ingreso::with(['actividad', 'culto'])->paginate(10);
+
+        $totales = [
+            'ingresos' => Ingreso::sum('monto_total'),
+            'egresos' => Egreso::sum('monto'),
+        ];
+        $totales['balance'] = $totales['ingresos'] - $totales['egresos'];
+
+        return view('ingresos.index', compact('ingresos', 'totales'));
     }
 
     public function create()

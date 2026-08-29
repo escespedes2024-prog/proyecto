@@ -10,7 +10,7 @@ class MiembroController extends Controller
 {
     public function index()
     {
-        $miembros = Miembro::withTrashed()->paginate(10);
+        $miembros = Miembro::paginate(10);
         return view('miembros.index', compact('miembros'));
     }
 

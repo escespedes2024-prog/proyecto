@@ -11,7 +11,7 @@ class ActividadController extends Controller
 {
     public function index()
     {
-        $actividades = Actividad::with('ministerio')->withTrashed()->paginate(10);
+        $actividades = Actividad::with('ministerio')->paginate(10);
         return view('actividades.index', compact('actividades'));
     }
 

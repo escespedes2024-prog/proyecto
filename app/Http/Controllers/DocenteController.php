@@ -10,7 +10,7 @@ class DocenteController extends Controller
 {
     public function index()
     {
-        $docentes = Docente::with('miembro')->withTrashed()->paginate(10);
+        $docentes = Docente::with('miembro')->paginate(10);
         return view('docentes.index', compact('docentes'));
     }
 

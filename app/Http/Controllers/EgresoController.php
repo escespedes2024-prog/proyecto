@@ -3,49 +3,82 @@
 namespace App\Http\Controllers;
 
 use App\Models\Egreso;
-use App\Models\LiderIglesia;
 use App\Models\Contrato;
+use App\Models\Ingreso;
 use App\Http\Requests\EgresoRequest;
 use Illuminate\Http\Request;
 
 class EgresoController extends Controller
 {
+    public function saldoDisponible(?int $ignorarId = null): float
+    {
+        $totalIngresos = Ingreso::sum('monto_total');
+        $totalEgresos = Egreso::sum('monto');
+
+        if ($ignorarId) {
+            $totalEgresos -= Egreso::withTrashed()->find($ignorarId)->monto ?? 0;
+        }
+
+        return $totalIngresos - $totalEgresos;
+    }
+
     public function index()
     {
-        $egresos = Egreso::with(['liderIglesia', 'contrato'])->withTrashed()->paginate(10);
-        return view('egresos.index', compact('egresos'));
+        $egresos = Egreso::with('contrato')->paginate(10);
+
+        $totales = [
+            'ingresos' => Ingreso::sum('monto_total'),
+            'egresos' => Egreso::sum('monto'),
+        ];
+        $totales['balance'] = $totales['ingresos'] - $totales['egresos'];
+
+        return view('egresos.index', compact('egresos', 'totales'));
     }
 
     public function create()
     {
-        $lideres = LiderIglesia::all();
         $contratos = Contrato::with('miembro')->get();
-        return view('egresos.create', compact('lideres', 'contratos'));
+        $saldoDisponible = $this->saldoDisponible();
+        return view('egresos.create', compact('contratos', 'saldoDisponible'));
     }
 
     public function store(EgresoRequest $request)
     {
+        $saldo = $this->saldoDisponible();
+
+        if ($request->monto > $saldo) {
+            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: $' . number_format($saldo, 2) . '.'])
+                ->withInput();
+        }
+
         Egreso::create($request->validated());
         return redirect()->route('egresos.index')->with('success', 'Egreso registrado con éxito.');
     }
 
     public function show($id)
     {
-        $egreso = Egreso::with(['liderIglesia', 'contrato'])->withTrashed()->findOrFail($id);
+        $egreso = Egreso::with('contrato')->withTrashed()->findOrFail($id);
         return view('egresos.show', compact('egreso'));
     }
 
     public function edit($id)
     {
         $egreso = Egreso::withTrashed()->findOrFail($id);
-        $lideres = LiderIglesia::all();
         $contratos = Contrato::with('miembro')->get();
-        return view('egresos.edit', compact('egreso', 'lideres', 'contratos'));
+        $saldoDisponible = $this->saldoDisponible($egreso->id);
+        return view('egresos.edit', compact('egreso', 'contratos', 'saldoDisponible'));
     }
 
     public function update(EgresoRequest $request, $id)
     {
         $egreso = Egreso::withTrashed()->findOrFail($id);
+        $saldo = $this->saldoDisponible($egreso->id);
+
+        if ($request->monto > $saldo) {
+            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: $' . number_format($saldo, 2) . '.'])
+                ->withInput();
+        }
+
         $egreso->update($request->validated());
         return redirect()->route('egresos.index')->with('success', 'Egreso actualizado con éxito.');
     }

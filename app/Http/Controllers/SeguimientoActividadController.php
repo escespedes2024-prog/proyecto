@@ -10,7 +10,7 @@ class SeguimientoActividadController extends Controller
 {
     public function index()
     {
-        $seguimientos = SeguimientoActividad::with('actividad')->withTrashed()->paginate(10);
+        $seguimientos = SeguimientoActividad::with('actividad')->paginate(10);
         return view('seguimiento.index', compact('seguimientos'));
     }
 
@@ -28,7 +28,7 @@ class SeguimientoActividadController extends Controller
             'observacion' => 'nullable|string',
             'responsable' => 'required|string|max:255',
             'porcentaje_avance' => 'required|numeric|min:0|max:100',
-            'estado' => 'required|string|max:100',
+            'estado' => 'required|string|in:En Progreso,Completado,Detenido',
         ]);
 
         SeguimientoActividad::create($validated);
@@ -58,7 +58,7 @@ class SeguimientoActividadController extends Controller
             'observacion' => 'nullable|string',
             'responsable' => 'required|string|max:255',
             'porcentaje_avance' => 'required|numeric|min:0|max:100',
-            'estado' => 'required|string|max:100',
+            'estado' => 'required|string|in:En Progreso,Completado,Detenido',
         ]);
 
         $seguimiento->update($validated);

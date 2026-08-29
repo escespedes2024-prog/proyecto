@@ -624,6 +624,20 @@ body {
     margin-left: -310px; /* Hide sidebar completely including margins */
 }
 
+/* Keep sidebar visible while scrolling (desktop only) */
+@media (min-width: 769px) {
+    .sidebar {
+        position: sticky;
+        top: 15px;
+        align-self: flex-start;
+    }
+    .nav-menu {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        min-height: 0;
+    }
+}
+
 /* Password Toggle styling */
 .btn-toggle-password {
     background: none;

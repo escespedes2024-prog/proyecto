@@ -11,7 +11,7 @@ class InscripcionController extends Controller
 {
     public function index()
     {
-        $cursos = Curso::withTrashed()
+        $cursos = Curso::query()
             ->withCount(['inscripciones' => fn ($q) => $q->whereNull('inscripciones.deleted_at')])
             ->orderBy('f_inicio', 'desc')
             ->paginate(10);

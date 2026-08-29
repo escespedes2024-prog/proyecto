@@ -31,7 +31,7 @@ class PagoCursoController extends Controller
         $validated = $request->validate([
             'monto' => ['required', 'numeric', 'min:0.01', 'max:' . $inscripcion->saldo_pendiente],
             'fecha_pago' => ['required', 'date'],
-            'metodo_pago' => ['required', 'string', 'max:100'],
+            'metodo_pago' => ['required', 'string', 'in:Efectivo,Transferencia,Tarjeta'],
             'comprobante' => ['nullable', 'string', 'max:255'],
         ]);
 

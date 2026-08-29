@@ -11,7 +11,7 @@ class LiderIglesiaController extends Controller
 {
     public function index()
     {
-        $lideres = LiderIglesia::with('cargo')->withTrashed()->paginate(10);
+        $lideres = LiderIglesia::with('cargo')->paginate(10);
         return view('lideres.index', compact('lideres'));
     }
 

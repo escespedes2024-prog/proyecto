@@ -21,6 +21,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PagoCursoController;
 use App\Http\Controllers\InscripcionController;
 use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReporteController;
 
 // Ruta de inicio redirige al login o dashboard
 Route::get('/', function () {
@@ -41,9 +43,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Dashboard
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Acceso y Seguridad
     Route::post('users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
@@ -129,4 +129,10 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     Route::get('contratos/{id}/renovar', [ContratoController::class, 'renovar'])->name('contratos.renovar');
     Route::post('contratos/{id}/restore', [ContratoController::class, 'restore'])->name('contratos.restore');
     Route::resource('contratos', ContratoController::class);
+
+    // 14. Reportes
+    Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
+    Route::get('reportes/miembros', [ReporteController::class, 'miembros'])->name('reportes.miembros');
+    Route::get('reportes/asistencia', [ReporteController::class, 'asistencia'])->name('reportes.asistencia');
+    Route::get('reportes/financiero', [ReporteController::class, 'financiero'])->name('reportes.financiero');
 });

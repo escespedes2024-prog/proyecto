@@ -35,7 +35,6 @@ return new class extends Migration
 
         Schema::create('egresos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_lider_iglesia')->nullable()->constrained('lideres_iglesia')->onDelete('set null');
             $table->foreignId('id_contrato')->nullable()->constrained('contratos')->onDelete('set null');
             $table->string('tipo_egreso'); // Servicio, Mantenimiento, Salario, Ayuda Social, etc.
             $table->decimal('monto', 12, 2);

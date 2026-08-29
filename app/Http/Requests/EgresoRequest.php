@@ -14,9 +14,8 @@ class EgresoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_lider_iglesia' => 'nullable|exists:lideres_iglesia,id',
             'id_contrato' => 'nullable|exists:contratos,id',
-            'tipo_egreso' => 'required|string|max:100',
+            'tipo_egreso' => 'required|string|in:Mantenimiento,Servicios Básicos,Salarios / Honorarios,Ayuda Comunitaria,Otros Egresos',
             'monto' => 'required|numeric|min:0',
             'fecha' => 'required|date',
             'descripcion' => 'nullable|string',

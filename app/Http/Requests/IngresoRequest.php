@@ -18,8 +18,8 @@ class IngresoRequest extends FormRequest
             'id_culto' => 'nullable|exists:cultos,id',
             'monto_total' => 'required|numeric|min:0',
             'fecha' => 'required|date',
-            'tipo' => 'required|string|max:100',
-            'metodo_pago' => 'required|string|max:100',
+            'tipo' => 'required|string|in:Diezmo,Ofrenda,Donación,Inscripción Curso',
+            'metodo_pago' => 'required|string|in:Efectivo,Transferencia,Tarjeta',
         ];
     }
 }
