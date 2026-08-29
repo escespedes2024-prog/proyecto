@@ -47,7 +47,7 @@ class EgresoController extends Controller
         $saldo = $this->saldoDisponible();
 
         if ($request->monto > $saldo) {
-            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: $' . number_format($saldo, 2) . '.'])
+            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: Bs ' . number_format($saldo, 2) . '.'])
                 ->withInput();
         }
 
@@ -75,7 +75,7 @@ class EgresoController extends Controller
         $saldo = $this->saldoDisponible($egreso->id);
 
         if ($request->monto > $saldo) {
-            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: $' . number_format($saldo, 2) . '.'])
+            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: Bs ' . number_format($saldo, 2) . '.'])
                 ->withInput();
         }
 
