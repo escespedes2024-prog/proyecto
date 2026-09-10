@@ -28,7 +28,9 @@ class SesionController extends Controller
             $c->id => $c->docentes->pluck('id')->toArray()
         ]);
 
-        return view('sesiones.create', compact('cursos', 'docentes', 'docentesPorCurso'));
+        $cursosData = $this->cursosParaJS($cursos);
+
+        return view('sesiones.create', compact('cursos', 'docentes', 'docentesPorCurso', 'cursosData'));
     }
 
     public function store(Request $request)
@@ -92,7 +94,23 @@ class SesionController extends Controller
             $c->id => $c->docentes->pluck('id')->toArray()
         ]);
 
-        return view('sesiones.edit', compact('sesion', 'cursos', 'docentes', 'docentesPorCurso'));
+        $cursosData = $this->cursosParaJS($cursos);
+
+        return view('sesiones.edit', compact('sesion', 'cursos', 'docentes', 'docentesPorCurso', 'cursosData'));
+    }
+
+    private function cursosParaJS($cursos)
+    {
+        return $cursos->mapWithKeys(fn ($c) => [
+            $c->id => [
+                'hora_inicio' => $c->hora_inicio ? substr((string) $c->hora_inicio, 0, 5) : null,
+                'hora_fin' => $c->hora_fin ? substr((string) $c->hora_fin, 0, 5) : null,
+                'dias_semana' => $c->dias_semana ?? [],
+                'f_inicio' => $c->f_inicio ? \Carbon\Carbon::parse($c->f_inicio)->format('Y-m-d') : null,
+                'f_fin' => $c->f_fin ? \Carbon\Carbon::parse($c->f_fin)->format('Y-m-d') : null,
+                'docentes' => $c->docentes->pluck('id')->toArray(),
+            ]
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -209,6 +227,22 @@ class SesionController extends Controller
 
             if ($queryDuplicada->exists()) {
                 $errores['fecha'] = 'Ya existe una sesión para este curso en esa fecha.';
+            }
+        }
+
+        if (!$errores && !empty($datos['id_docente'])) {
+            $queryDocente = Sesion::where('id_docente', $datos['id_docente'])
+                ->whereDate('fecha', $datos['fecha'])
+                ->whereTime('hora', $datos['hora']);
+
+            if ($ignorarSesionId) {
+                $queryDocente->where('id', '!=', $ignorarSesionId);
+            }
+
+            if ($queryDocente->exists()) {
+                $docente = Docente::with('miembro')->find($datos['id_docente']);
+                $nombre = $docente?->miembro?->nombre ?? 'El docente';
+                $errores['id_docente'] = 'Ya existe una sesión de ' . $nombre . ' en esa fecha y hora.';
             }
         }
 

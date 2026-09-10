@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Egreso;
 use App\Models\Contrato;
 use App\Models\Ingreso;
+use App\Models\LiderIglesia;
 use App\Http\Requests\EgresoRequest;
 use Illuminate\Http\Request;
 
@@ -38,8 +39,9 @@ class EgresoController extends Controller
     public function create()
     {
         $contratos = Contrato::with('miembro')->get();
+        $lideres = LiderIglesia::with('cargo')->get()->sortBy('nombre')->values();
         $saldoDisponible = $this->saldoDisponible();
-        return view('egresos.create', compact('contratos', 'saldoDisponible'));
+        return view('egresos.create', compact('contratos', 'lideres', 'saldoDisponible'));
     }
 
     public function store(EgresoRequest $request)
@@ -65,8 +67,9 @@ class EgresoController extends Controller
     {
         $egreso = Egreso::withTrashed()->findOrFail($id);
         $contratos = Contrato::with('miembro')->get();
+        $lideres = LiderIglesia::with('cargo')->get()->sortBy('nombre')->values();
         $saldoDisponible = $this->saldoDisponible($egreso->id);
-        return view('egresos.edit', compact('egreso', 'contratos', 'saldoDisponible'));
+        return view('egresos.edit', compact('egreso', 'contratos', 'lideres', 'saldoDisponible'));
     }
 
     public function update(EgresoRequest $request, $id)

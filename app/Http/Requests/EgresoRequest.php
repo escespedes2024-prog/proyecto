@@ -19,7 +19,7 @@ class EgresoRequest extends FormRequest
             'monto' => 'required|numeric|min:0',
             'fecha' => 'required|date',
             'descripcion' => 'nullable|string',
-            'responsable' => 'required|string|max:255',
+            'responsable' => 'required|string|exists:lideres_iglesia,nombre',
             'comprobante' => 'nullable|string|max:255',
         ];
     }

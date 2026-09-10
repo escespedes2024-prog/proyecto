@@ -16,15 +16,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear Rol Admin
-        $adminRole = Role::firstOrCreate(
-            ['nombre' => 'Admin'],
-            [
-                'descripcion' => 'Administrador con acceso total al sistema.',
-                'estado' => 'Activo',
-                'nivel_acceso' => 10,
-            ]
-        );
+        // Crear Roles estándar
+        $roles = [
+            'Administrador' => 'Administrador con acceso total al sistema.',
+            'Secretario' => 'Gestiona personas y módulos operativos del sistema.',
+            'Tesorero' => 'Gestiona cultos y las finanzas (ingresos, egresos, contratos).',
+        ];
+
+        $adminRole = null;
+        $nivel = 0;
+        foreach ($roles as $nombre => $descripcion) {
+            $rol = Role::firstOrCreate(
+                ['nombre' => $nombre],
+                [
+                    'descripcion' => $descripcion,
+                    'estado' => 'Activo',
+                    'nivel_acceso' => ++$nivel,
+                ]
+            );
+            if ($nombre === 'Administrador') {
+                $adminRole = $rol;
+            }
+        }
 
         // Crear Usuario Admin
         $adminUser = User::firstOrCreate(

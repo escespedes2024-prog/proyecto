@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -25,14 +26,21 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:12|confirmed',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        // Todo nuevo usuario se crea como miembro del personal (Secretario) por defecto;
+        // sus roles se ajustan desde "Administrar Rol Usuario".
+        $defaultRole = Role::where('nombre', 'Secretario')->first();
+        if ($defaultRole) {
+            $user->roles()->attach($defaultRole->id);
+        }
 
         return redirect()->route('users.index')->with('success', 'Usuario creado con éxito.');
     }
@@ -56,7 +64,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:6|confirmed',
+            'password' => 'nullable|string|min:12|confirmed',
         ]);
 
         $user->name = $validated['name'];

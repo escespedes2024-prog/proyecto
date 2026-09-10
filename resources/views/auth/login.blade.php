@@ -58,7 +58,9 @@
     </form>
 
     <div class="auth-links">
-        ¿No tienes una cuenta? <a href="{{ route('register') }}">Regístrate aquí</a>
+        @if($registrationOpen)
+            ¿No tienes una cuenta? <a href="{{ route('register') }}">Regístrate aquí</a>
+        @endif
     </div>
 </div>
 @endsection

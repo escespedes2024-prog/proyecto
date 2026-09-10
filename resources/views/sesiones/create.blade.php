@@ -48,12 +48,12 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
                 <label class="form-label">Fecha</label>
-                <input type="date" name="fecha" class="form-control" value="{{ old('fecha', date('Y-m-d')) }}" required>
+                <input type="date" name="fecha" id="fecha" class="form-control" value="{{ old('fecha', date('Y-m-d')) }}" required>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Hora</label>
-                <input type="time" name="hora" class="form-control" value="{{ old('hora') }}" required>
+                <input type="time" name="hora" id="hora" class="form-control" value="{{ old('hora') }}" required>
             </div>
         </div>
 
@@ -75,23 +75,68 @@
 </div>
 
 <script>
-    const docentesPorCurso = @json($docentesPorCurso);
-    const seleccionDocente = document.getElementById('id_docente');
+    const cursosData = @json($cursosData);
     const cursoSelect = document.getElementById('id_curso');
-    cursoSelect.addEventListener('change', filtrarDocentes);
+    const docenteSelect = document.getElementById('id_docente');
+    const fechaInput = document.getElementById('fecha');
+    const horaInput = document.getElementById('hora');
 
-    function filtrarDocentes() {
-        const cursoId = cursoSelect.value;
-        for (const opt of seleccionDocente.options) {
-            if (opt.value === '') continue;
-            const permitido = !cursoId || (docentesPorCurso[cursoId] || []).includes(Number(opt.value));
-            opt.style.display = permitido ? '' : 'none';
+    function esDiaPermitido(fecha, cursoId) {
+        const data = cursosData[cursoId];
+        if (!data || !data.dias_semana || data.dias_semana.length === 0) return true;
+        const iso = fecha.getDay() === 0 ? 7 : fecha.getDay();
+        return data.dias_semana.includes(iso);
+    }
+
+    function siguienteFechaPermitida(cursoId) {
+        const data = cursosData[cursoId];
+        if (!data) return '';
+        let fecha = new Date();
+        if (data.f_inicio) {
+            const ini = new Date(data.f_inicio + 'T00:00:00');
+            if (fecha < ini) fecha = new Date(ini);
         }
-        if (cursoId && !(docentesPorCurso[cursoId] || []).includes(Number(seleccionDocente.value))) {
-            seleccionDocente.value = '';
+        for (let i = 0; i < 366; i++) {
+            const iso = fecha.getDay() === 0 ? 7 : fecha.getDay();
+            if ((!data.dias_semana || data.dias_semana.length === 0 || data.dias_semana.includes(iso))
+                && (!data.f_fin || fecha.toISOString().split('T')[0] <= data.f_fin)) {
+                return fecha.toISOString().split('T')[0];
+            }
+            fecha.setDate(fecha.getDate() + 1);
+        }
+        return '';
+    }
+
+    function aplicarCurso() {
+        const cursoId = cursoSelect.value;
+        if (!cursoId) return;
+        const data = cursosData[cursoId];
+
+        horaInput.value = data.hora_inicio || '';
+
+        const prox = siguienteFechaPermitida(cursoId);
+        if (prox) fechaInput.value = prox;
+
+        if (data.docentes.length > 0) {
+            docenteSelect.value = String(data.docentes[0]);
         }
     }
 
-    filtrarDocentes();
+    cursoSelect.addEventListener('change', aplicarCurso);
+
+    fechaInput.addEventListener('input', function () {
+        const cursoId = cursoSelect.value;
+        if (!cursoId) return;
+        const val = this.value;
+        if (!val) return;
+        const fecha = new Date(val + 'T00:00:00');
+        if (!esDiaPermitido(fecha, cursoId)) {
+            this.setCustomValidity('Este curso solo se dicta los días seleccionados en su horario.');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    aplicarCurso();
 </script>
 @endsection

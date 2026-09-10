@@ -16,8 +16,8 @@
     .chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
     .chart-bar-wrap { width: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 3px; height: 150px; }
     .bar { width: 12px; border-radius: 4px 4px 0 0; min-height: 2px; }
-    .bar.ing { background: linear-gradient(180deg, var(--success), #2f9e44); }
-    .bar.egr { background: linear-gradient(180deg, var(--error), #e03131); }
+    .bar.ing { background: var(--success); }
+    .bar.egr { background: var(--error); }
     .chart-label { font-size: 11px; color: var(--text-secondary); text-align: center; }
     .legend { display: flex; gap: 16px; margin-bottom: 14px; font-size: 13px; color: var(--text-secondary); }
     .legend span { display: flex; align-items: center; gap: 6px; }
@@ -31,28 +31,28 @@
 
 <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px;">
     <div class="dashboard-card glass-panel" style="border-left: 4px solid var(--primary);">
-        <div class="card-icon">👥</div>
+        <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 26px; height: 26px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" /></svg></div>
         <div class="card-title">Miembros Registrados</div>
         <div class="card-value">{{ $stats['miembros'] }}</div>
         <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">{{ $stats['miembros_activos'] }} activos</div>
     </div>
 
     <div class="dashboard-card glass-panel" style="border-left: 4px solid var(--accent);">
-        <div class="card-icon">🛡️</div>
+        <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 26px; height: 26px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg></div>
         <div class="card-title">Ministerios</div>
         <div class="card-value">{{ $stats['ministerios'] }}</div>
         <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">{{ $stats['lideres'] }} líderes activos</div>
     </div>
 
     <div class="dashboard-card glass-panel" style="border-left: 4px solid var(--success);">
-        <div class="card-icon">💵</div>
+        <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 26px; height: 26px;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" /></svg></div>
         <div class="card-title">Ingresos del Mes</div>
         <div class="card-value">Bs {{ number_format($stats['ingresos_mes'], 2) }}</div>
         <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Total: Bs {{ number_format($stats['ingresos_totales'], 2) }}</div>
     </div>
 
     <div class="dashboard-card glass-panel" style="border-left: 4px solid var(--error);">
-        <div class="card-icon">💸</div>
+        <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 26px; height: 26px;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 17.25a1.5 1.5 0 0 1 1.5-1.5h2.25a1.5 1.5 0 0 1 1.5 1.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-2.25a1.5 1.5 0 0 1-1.5-1.5v-1.5Z" /></svg></div>
         <div class="card-title">Egresos del Mes</div>
         <div class="card-value">Bs {{ number_format($stats['egresos_mes'], 2) }}</div>
         <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Balance mes: Bs {{ number_format($stats['balance_mes'], 2) }}</div>
@@ -138,7 +138,7 @@
                 <span style="color: var(--text-secondary);">Bs {{ number_format($total, 2) }}</span>
             </div>
             <div style="height: 8px; background: rgba(0,0,0,.08); border-radius: 6px; overflow: hidden;">
-                <div style="height: 100%; width: {{ round(($total / $maxTipo) * 100) }}%; background: linear-gradient(90deg, var(--success), #2f9e44); border-radius: 6px;"></div>
+                <div style="height: 100%; width: {{ round(($total / $maxTipo) * 100) }}%; background: var(--success); border-radius: 6px;"></div>
             </div>
         </div>
         @endforeach
@@ -157,7 +157,7 @@
                 <span style="color: var(--text-secondary);">Bs {{ number_format($total, 2) }}</span>
             </div>
             <div style="height: 8px; background: rgba(0,0,0,.08); border-radius: 6px; overflow: hidden;">
-                <div style="height: 100%; width: {{ round(($total / $maxTipoE) * 100) }}%; background: linear-gradient(90deg, var(--error), #e03131); border-radius: 6px;"></div>
+                <div style="height: 100%; width: {{ round(($total / $maxTipoE) * 100) }}%; background: var(--error); border-radius: 6px;"></div>
             </div>
         </div>
         @endforeach
@@ -204,14 +204,14 @@
 <div class="glass-panel" style="padding: 24px;">
     <h3 style="font-weight: 700; margin-bottom: 12px; color: var(--text-primary);">Accesos Rápidos</h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;">
-        <a href="{{ route('miembros.create') }}" class="btn" style="width: auto; justify-content: center;">➕ Miembro</a>
-        <a href="{{ route('ministerios.create') }}" class="btn" style="width: auto; justify-content: center;">🛡️ Ministerios</a>
-        <a href="{{ route('cursos.create') }}" class="btn" style="width: auto; justify-content: center;">🎓 Cursos</a>
-        <a href="{{ route('inscripciones.index') }}" class="btn" style="width: auto; justify-content: center;">📝 Inscripciones</a>
-        <a href="{{ route('asistencia.registrar') }}" class="btn" style="width: auto; justify-content: center;">✅ Asistencia</a>
-        <a href="{{ route('ingresos.create') }}" class="btn" style="width: auto; justify-content: center;">💵 Registrar Ingreso</a>
-        <a href="{{ route('egresos.create') }}" class="btn" style="width: auto; justify-content: center;">💸 Registrar Egreso</a>
-        <a href="{{ route('contratos.create') }}" class="btn" style="width: auto; justify-content: center;">📄 Nuevo Contrato</a>
+        <a href="{{ route('miembros.create') }}" class="btn" style="width: auto; justify-content: center;">+ Miembro</a>
+        <a href="{{ route('ministerios.create') }}" class="btn" style="width: auto; justify-content: center;">+ Ministerio</a>
+        <a href="{{ route('cursos.create') }}" class="btn" style="width: auto; justify-content: center;">+ Curso</a>
+        <a href="{{ route('inscripciones.index') }}" class="btn" style="width: auto; justify-content: center;">+ Inscripción</a>
+        <a href="{{ route('asistencia.registrar') }}" class="btn" style="width: auto; justify-content: center;">+ Asistencia</a>
+        <a href="{{ route('ingresos.create') }}" class="btn" style="width: auto; justify-content: center;">+ Registrar Ingreso</a>
+        <a href="{{ route('egresos.create') }}" class="btn" style="width: auto; justify-content: center;">+ Registrar Egreso</a>
+        <a href="{{ route('contratos.create') }}" class="btn" style="width: auto; justify-content: center;">+ Nuevo Contrato</a>
     </div>
 </div>
 @endsection

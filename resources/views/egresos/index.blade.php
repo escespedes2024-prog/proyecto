@@ -34,7 +34,6 @@
                     <th>Tipo Egreso</th>
                     <th>Monto</th>
                     <th>Responsable</th>
-                    <th>Líder Asoc.</th>
                     <th>Comprobante</th>
                     <th>Acciones</th>
                 </tr>
@@ -47,7 +46,6 @@
                         <td>{{ $egreso->tipo_egreso }}</td>
                         <td style="font-weight: 600; color: var(--error);">Bs {{ number_format($egreso->monto, 2) }}</td>
                         <td>{{ $egreso->responsable }}</td>
-                        <td>{{ $egreso->contrato?->lider?->nombre ?? 'N/A' }}</td>
                         <td>{{ $egreso->comprobante ?? 'N/A' }}</td>
                         <td>
                             <div class="action-buttons">
@@ -70,7 +68,7 @@
                 
 @empty
                     <tr>
-                        <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                        <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 30px;">
                             No hay egresos registrados.
                         </td>
                     </tr>

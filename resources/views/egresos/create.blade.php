@@ -39,7 +39,16 @@
             
             <div class="form-group">
                 <label class="form-label">Responsable del Pago</label>
-                <input type="text" name="responsable" class="form-control" value="{{ old('responsable') }}" required>
+                <select name="responsable" class="form-control" required>
+                    <option value="">Seleccione un líder...</option>
+                    @foreach($lideres as $lider)
+
+                        <option value="{{ $lider->nombre }}" {{ old('responsable') == $lider->nombre ? 'selected' : '' }}>
+                            {{ $lider->nombre }}{{ $lider->cargo ? ' - ' . $lider->cargo->nombre : '' }}
+                        </option>
+                    
+@endforeach
+                </select>
             </div>
         </div>
 

@@ -38,7 +38,18 @@
 
             <div class="form-group">
                 <label class="form-label">Responsable del Pago</label>
-                <input type="text" name="responsable" class="form-control" value="{{ old('responsable', $egreso->responsable) }}" required>
+                <select name="responsable" class="form-control" required>
+                    @if($egreso->responsable && !in_array($egreso->responsable, $lideres->pluck('nombre')->all()))
+                        <option value="{{ $egreso->responsable }}" selected>{{ $egreso->responsable }}</option>
+                    @endif
+                    @foreach($lideres as $lider)
+
+                        <option value="{{ $lider->nombre }}" {{ old('responsable', $egreso->responsable) == $lider->nombre ? 'selected' : '' }}>
+                            {{ $lider->nombre }}{{ $lider->cargo ? ' - ' . $lider->cargo->nombre : '' }}
+                        </option>
+                    
+@endforeach
+                </select>
             </div>
         </div>
 

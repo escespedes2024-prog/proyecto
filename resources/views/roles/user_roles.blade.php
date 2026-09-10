@@ -17,6 +17,7 @@
                     <th>Correo Electrónico</th>
                     <th>Roles Actuales</th>
                     <th>Asignar Roles</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,7 +38,7 @@
                             @endif
                         </td>
                         <td>
-                            <form method="POST" action="{{ route('roles.user.save') }}" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                            <form id="roles-form-{{ $user->id }}" method="POST" action="{{ route('roles.user.save') }}" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                                 @csrf
                                 <input type="hidden" name="user_id" value="{{ $user->id }}">
 
@@ -50,19 +51,22 @@
                                     </label>
                                 
 @endforeach
-
-                                <button type="submit" class="btn" style="width: auto; padding: 6px 14px; font-size: 0.85rem;">Guardar</button>
                             </form>
-                            <form method="POST" action="{{ route('roles.user.clear', $user->id) }}" style="display: inline; margin-left: 4px;">
-                                @csrf
-                                <button type="submit" class="btn" style="width: auto; padding: 6px 14px; font-size: 0.85rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary);">Limpiar Roles</button>
-                            </form>
+                        </td>
+                        <td>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <button type="submit" form="roles-form-{{ $user->id }}" class="btn" style="width: 100%; white-space: nowrap; padding: 6px 14px; font-size: 0.85rem;">Guardar</button>
+                                <form method="POST" action="{{ route('roles.user.clear', $user->id) }}">
+                                    @csrf
+                                    <button type="submit" class="btn" style="width: 100%; white-space: nowrap; padding: 6px 14px; font-size: 0.85rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary);">Limpiar Roles</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 
 @empty
                     <tr>
-                        <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                        <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 30px;">
                             No hay usuarios registrados.
                         </td>
                     </tr>
