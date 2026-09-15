@@ -85,6 +85,14 @@ class RoleController extends Controller
         return view('roles.user_roles', compact('users', 'roles'));
     }
 
+    // formulario de asignación de roles para un usuario específico
+    public function userRolesEdit($userId)
+    {
+        $user = User::with('roles')->findOrFail($userId);
+        $roles = Role::all();
+        return view('roles.user_roles_edit', compact('user', 'roles'));
+    }
+
     // handle assignment of roles to a user
     public function assignRole(Request $request)
     {

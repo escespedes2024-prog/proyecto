@@ -58,6 +58,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::resource('users', UserController::class);
 
         Route::get('roles/assign', [RoleController::class, 'userRoles'])->name('roles.user');
+        Route::get('roles/assign/{user}/edit', [RoleController::class, 'userRolesEdit'])->name('roles.user.edit');
         Route::post('roles/assign', [RoleController::class, 'assignRole'])->name('roles.user.save');
         Route::post('roles/assign/{id}/clear', [RoleController::class, 'clearUserRoles'])->name('roles.user.clear');
         Route::post('roles/{id}/restore', [RoleController::class, 'restore'])->name('roles.restore');

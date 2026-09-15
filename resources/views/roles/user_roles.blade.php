@@ -6,7 +6,7 @@
 <div class="glass-panel" style="padding: 30px;">
     <div style="margin-bottom: 20px;">
         <h2 style="font-weight: 700; color: var(--text-primary);">Asignación de Roles a Usuarios</h2>
-        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Marque los roles que desea asignar a cada usuario y pulse "Guardar".</p>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Pulse "Asignar Roles" para seleccionar los roles de cada usuario.</p>
     </div>
 
     <div class="table-container">
@@ -16,7 +16,6 @@
                     <th>Usuario</th>
                     <th>Correo Electrónico</th>
                     <th>Roles Actuales</th>
-                    <th>Asignar Roles</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -38,24 +37,8 @@
                             @endif
                         </td>
                         <td>
-                            <form id="roles-form-{{ $user->id }}" method="POST" action="{{ route('roles.user.save') }}" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                                @csrf
-                                <input type="hidden" name="user_id" value="{{ $user->id }}">
-
-                                @foreach($roles as $role)
-
-                                    <label style="display: flex; align-items: center; gap: 5px; font-size: 0.85rem; color: var(--text-primary); white-space: nowrap;">
-                                        <input type="checkbox" name="roles[]" value="{{ $role->id }}" class="form-check-input" style="width: auto;"
-                                            @if($user->roles->contains('id', $role->id)) checked @endif>
-                                        {{ $role->nombre }}
-                                    </label>
-                                
-@endforeach
-                            </form>
-                        </td>
-                        <td>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <button type="submit" form="roles-form-{{ $user->id }}" class="btn" style="width: 100%; white-space: nowrap; padding: 6px 14px; font-size: 0.85rem;">Guardar</button>
+                                <a href="{{ route('roles.user.edit', $user->id) }}" class="btn" style="width: 100%; white-space: nowrap; padding: 6px 14px; font-size: 0.85rem; text-align: center; text-decoration: none;">Asignar Roles</a>
                                 <form method="POST" action="{{ route('roles.user.clear', $user->id) }}">
                                     @csrf
                                     <button type="submit" class="btn" style="width: 100%; white-space: nowrap; padding: 6px 14px; font-size: 0.85rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary);">Limpiar Roles</button>
@@ -66,7 +49,7 @@
                 
 @empty
                     <tr>
-                        <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                        <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 30px;">
                             No hay usuarios registrados.
                         </td>
                     </tr>
