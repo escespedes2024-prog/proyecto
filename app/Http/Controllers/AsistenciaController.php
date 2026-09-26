@@ -116,6 +116,8 @@ class AsistenciaController extends Controller
     public function historial(int $miembroId)
     {
         $asistencias = Asistencia::with(['sesion.curso', 'miembro'])
+            ->join('sesiones', 'asistencias_sesion.sesion_id', '=', 'sesiones.id')
+            ->select('asistencias_sesion.*')
             ->porMiembro($miembroId)
             ->orderByDesc('sesiones.fecha')
             ->get();

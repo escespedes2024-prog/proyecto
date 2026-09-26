@@ -21,6 +21,19 @@
         </div>
     @endif
 
+    @if(session('remaining_attempts'))
+        <div class="alert alert-warning">
+            Credenciales incorrectas. Intentos restantes: <strong>{{ session('remaining_attempts') }}</strong>.
+        </div>
+    @endif
+
+    @if(session('login_locked'))
+        <div class="alert alert-danger">
+            Demasiados intentos fallidos. Cuenta temporalmente bloqueada. Intente de nuevo en
+            <strong>{{ ceil(session('login_locked') / 60) }} minuto(s)</strong>.
+        </div>
+    @endif
+
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
