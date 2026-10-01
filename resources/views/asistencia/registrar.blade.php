@@ -11,50 +11,25 @@
             <select name="curso_id" id="filtro_curso" class="form-control">
                 <option value="">Todos los cursos...</option>
                 @foreach($cursos as $curso)
-
                     <option value="{{ $curso->id }}" {{ request('curso_id') == $curso->id ? 'selected' : '' }}>{{ $curso->nombre }}</option>
-                
-@endforeach
+                @endforeach
             </select>
         </div>
         <div style="flex: 1; min-width: 250px;">
             <label class="form-label">Sesión</label>
-            <select name="sesion_id" class="form-control" required>
+            <select name="sesion_id" id="select_sesion" class="form-control" required>
                 <option value="">Seleccione una sesión...</option>
                 @foreach($cursos as $curso)
-
-                    <optgroup label="{{ $curso->nombre }}">
-                        @foreach($curso->sesiones as $sesionCurso)
-
-                            <option value="{{ $sesionCurso->id }}" {{ request('sesion_id') == $sesionCurso->id ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::parse($sesionCurso->fecha)->format('d/m/Y') }} - {{ substr((string) $sesionCurso->hora, 0, 5) }} - {{ $sesionCurso->tema }}
-                            </option>
-                        
-@endforeach
-                    </optgroup>
-                
-@endforeach
+                    @foreach($curso->sesiones as $sesionCurso)
+                        <option value="{{ $sesionCurso->id }}" data-curso-id="{{ $curso->id }}" {{ request('sesion_id') == $sesionCurso->id ? 'selected' : '' }}>{{ \Carbon\Carbon::parse($sesionCurso->fecha)->format('d/m/Y') }} - {{ substr((string) $sesionCurso->hora, 0, 5) }} - {{ $sesionCurso->tema }}</option>
+                    @endforeach
+                @endforeach
             </select>
         </div>
         <div>
             <button type="submit" class="btn" style="width: auto;">Cargar Sesión</button>
         </div>
     </form>
-
-    <script>
-        const filtroCurso = document.getElementById('filtro_curso');
-        if (filtroCurso) {
-            filtroCurso.addEventListener('change', function () {
-                const nombre = this.options[this.selectedIndex]?.text || '';
-                const selectSesion = this.form.querySelector('select[name="sesion_id"]');
-                for (const opt of selectSesion.options) {
-                    opt.style.display = opt.parentElement.tagName === 'OPTGROUP'
-                        ? (opt.parentElement.label === nombre || this.value === '')
-                        : true;
-                }
-            });
-        }
-    </script>
 </div>
 
 @if($sesion)
@@ -102,7 +77,6 @@
                 </thead>
                 <tbody>
                     @foreach($inscritos as $inscrito)
-
                         @php
                             $actual = $asistencias->get($inscrito->miembro_id);
                         @endphp
@@ -111,18 +85,15 @@
                             <td>
                                 <select name="asistencia[{{ $inscrito->miembro_id }}][estado]" class="form-control" style="min-width: 140px;">
                                     @foreach(['Presente', 'Ausente', 'Tardanza', 'Justificado'] as $estado)
-
-                                        <option value="{{ $estado }}" {{ ($actual?->estado ?? '') == $estado ? 'selected' : '' }}>{{ $estado }}</option>
-                                    
-@endforeach
+                                        <option value="{{ $estado }}" {{ ($actual?->estado ?? 'Ausente') == $estado ? 'selected' : '' }}>{{ $estado }}</option>
+                                    @endforeach
                                 </select>
                             </td>
                             <td>
                                 <input type="text" name="asistencia[{{ $inscrito->miembro_id }}][observacion]" class="form-control" value="{{ $actual?->observacion ?? '' }}" placeholder="Opcional...">
                             </td>
                         </tr>
-                    
-@endforeach
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -135,4 +106,46 @@
     @endif
 </div>
 @endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filtroCurso = document.getElementById('filtro_curso');
+        const selectSesion = document.getElementById('select_sesion');
+        if (!filtroCurso || !selectSesion) return;
+
+        const PLACEHOLDER = 'Seleccione una sesión...';
+        // Snapshot de todas las opciones con su curso
+        const todas = Array.from(selectSesion.querySelectorAll('option[data-curso-id]'))
+            .map(o => ({ value: o.value, curso: o.dataset.cursoId, texto: o.textContent.trim() }));
+
+        const inicial = selectSesion.value;
+
+        function aplicarFiltro(cursoId) {
+            const filtradas = (cursoId === '')
+                ? todas
+                : todas.filter(o => o.curso === cursoId);
+
+            selectSesion.innerHTML = '';
+            const ph = document.createElement('option');
+            ph.value = '';
+            ph.textContent = PLACEHOLDER;
+            selectSesion.appendChild(ph);
+
+            filtradas.forEach(o => {
+                const opt = document.createElement('option');
+                opt.value = o.value;
+                opt.dataset.cursoId = o.curso;
+                opt.textContent = o.texto;
+                selectSesion.appendChild(opt);
+            });
+
+            // Mantener selección solo si sigue disponible
+            selectSesion.value = filtradas.some(o => o.value === inicial) ? inicial : '';
+        }
+
+        filtroCurso.addEventListener('change', () => aplicarFiltro(filtroCurso.value));
+        aplicarFiltro(filtroCurso.value);
+    });
+</script>
+
 @endsection
