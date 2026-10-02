@@ -3,16 +3,47 @@
 @section('title', 'Administrar Inscripciones')
 
 @section('content')
+<div class="glass-panel" style="padding: 24px; margin-bottom: 20px;">
+    <h3 style="font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">Buscar Curso</h3>
+    <form method="GET" action="{{ route('inscripciones.index') }}" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+        <div style="flex: 1; min-width: 250px;">
+            <label class="form-label">Nombre del curso</label>
+            <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Buscar por nombre...">
+        </div>
+        <div>
+            <label class="form-label">Pago</label>
+            <select name="tipo" class="form-control" style="min-width: 160px;">
+                <option value="">Todos</option>
+                <option value="con_pago" {{ request('tipo') == 'con_pago' ? 'selected' : '' }}>Con costo</option>
+                <option value="gratuito" {{ request('tipo') == 'gratuito' ? 'selected' : '' }}>Gratuito</option>
+            </select>
+        </div>
+        <div>
+            <label class="form-label">Cupo</label>
+            <select name="cupo" class="form-control" style="min-width: 160px;">
+                <option value="">Todos</option>
+                <option value="disponible" {{ request('cupo') == 'disponible' ? 'selected' : '' }}>Con cupo disponible</option>
+                <option value="lleno" {{ request('cupo') == 'lleno' ? 'selected' : '' }}>Cupo lleno</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="btn" style="width: auto;">Filtrar</button>
+        </div>
+        @if(request()->has('q') || request()->has('tipo') || request()->has('cupo'))
+        <div>
+            <a href="{{ route('inscripciones.index') }}" class="btn" style="width: auto; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Limpiar</a>
+        </div>
+        @endif
+    </form>
+</div>
+
 <div class="glass-panel" style="padding: 30px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="font-weight: 700; color: var(--text-primary);">Cursos e Inscripciones</h2>
-        <a href="{{ route('cursos.create') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">
-            + Nuevo Curso
-        </a>
     </div>
 
-    <div class="table-container">
-        <table class="data-table">
+    <div class="table-container" id="tablaCursos">
+        <table class="data-table" id="tblCursos">
             <thead>
                 <tr>
                     <th>Curso</th>
@@ -40,7 +71,7 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <a href="{{ route('inscripciones.gestion', $curso->id) }}" class="btn-icon" title="Gestionar Inscripciones"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg></a>
+                                <a href="{{ route('inscripciones.gestion', $curso->id) }}" class="btn-icon" title="Inscribirse al curso"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg></a>
                             </div>
                         </td>
                     </tr>
@@ -48,7 +79,11 @@
 @empty
                     <tr>
                         <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 30px;">
-                            No hay cursos registrados.
+                            @if(request()->has('q') || request()->has('tipo') || request()->has('cupo'))
+                                No se encontraron cursos con los filtros aplicados.
+                            @else
+                                No hay cursos registrados.
+                            @endif
                         </td>
                     </tr>
                 
@@ -62,4 +97,27 @@
 
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.querySelector('input[name="q"]');
+        const tabla = document.getElementById('tblCursos');
+
+        if (!input || !tabla) return;
+
+        const normalizar = (s) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const filas = Array.from(tabla.querySelectorAll('tbody tr'));
+
+        function filtrar() {
+            const termino = normalizar(input.value.trim());
+            filas.forEach(fila => {
+                const nombre = normalizar(fila.cells[0]?.textContent || '');
+                fila.style.display = (termino === '' || nombre.includes(termino)) ? '' : 'none';
+            });
+        }
+
+        input.addEventListener('input', filtrar);
+        filtrar();
+    });
+</script>
 @endsection

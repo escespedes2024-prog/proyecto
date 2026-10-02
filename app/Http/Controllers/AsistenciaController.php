@@ -16,6 +16,7 @@ class AsistenciaController extends Controller
     {
         $asistencias = Asistencia::with(['miembro', 'sesion.curso', 'user'])
             ->join('sesiones', 'asistencias_sesion.sesion_id', '=', 'sesiones.id')
+            ->select('asistencias_sesion.*')
             ->when($request->filled('q'), fn ($q) => $q->whereHas('miembro', fn ($m) => $m->where('nombre', 'like', '%' . $request->q . '%')))
             ->when($request->filled('curso_id'), fn ($q) => $q->porCurso($request->curso_id))
             ->when($request->filled('estado'), fn ($q) => $q->where('asistencias_sesion.estado', $request->estado))

@@ -9,12 +9,24 @@ use Illuminate\Http\Request;
 
 class InscripcionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $cursos = Curso::query()
             ->withCount(['inscripciones' => fn ($q) => $q->whereNull('inscripciones.deleted_at')])
+            ->when($request->filled('q'), function ($q) use ($request) {
+                $termino = trim($request->input('q'));
+                $q->where(function ($sub) use ($termino) {
+                    $sub->where('nombre', 'like', '%' . $termino . '%')
+                        ->orWhere('descripcion', 'like', '%' . $termino . '%');
+                });
+            })
+            ->when($request->input('tipo') === 'con_pago', fn ($q) => $q->where('tiene_pago', true))
+            ->when($request->input('tipo') === 'gratuito', fn ($q) => $q->where('tiene_pago', false))
+            ->when($request->input('cupo') === 'disponible', fn ($q) => $q->havingRaw('inscripciones_count < cupo_max'))
+            ->when($request->input('cupo') === 'lleno', fn ($q) => $q->havingRaw('inscripciones_count >= cupo_max'))
             ->orderBy('f_inicio', 'desc')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return view('inscripciones.index', compact('cursos'));
     }
