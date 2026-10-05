@@ -71,7 +71,6 @@
                 <tr>
                     <th>#</th>
                     <th>Nombre</th>
-                    <th>Email</th>
                     <th>Teléfono</th>
                     <th>Sexo</th>
                     <th>Fecha Ingreso</th>
@@ -84,7 +83,6 @@
                 <tr>
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $miembro->nombre }}</td>
-                    <td>{{ $miembro->email ?? '-' }}</td>
                     <td>{{ $miembro->telefono ?? '-' }}</td>
                     <td>{{ $miembro->sexo ?? '-' }}</td>
                     <td>{{ \Carbon\Carbon::parse($miembro->fecha_ingreso)->format('d/m/Y') }}</td>

@@ -13,7 +13,8 @@ class MiembroRequest extends FormRequest
 
     public function rules(): array
     {
-        $miembroId = $this->route('miembro') ? $this->route('miembro')->id : null;
+        $miembroId = $this->route('miembro');
+        $miembroId = $miembroId !== null ? (int) $miembroId : null;
 
         return [
             'nombre' => 'required|string|max:255|unique:miembros,nombre,' . $miembroId,
