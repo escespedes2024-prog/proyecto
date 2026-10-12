@@ -19,14 +19,30 @@
     ?>
 
     <div class="app-container">
+        <script>
+            // Restaura el estado del menú ANTES de pintar el sidebar (evita el parpadeo).
+            (function () {
+                try {
+                    if (window.matchMedia('(min-width: 769px)').matches
+                        && localStorage.getItem('actua_sidebar') === 'collapsed') {
+                        document.currentScript.parentElement.classList.add('sidebar-collapsed');
+                    }
+                } catch (e) { /* almacenamiento no disponible */ }
+            })();
+        </script>
+
         <!-- Sidebar Navigation -->
-        <aside class="sidebar glass-panel">
+        <aside class="sidebar glass-panel" id="app-sidebar" aria-label="Menú de navegación">
             <div class="sidebar-header">
-                <button class="sidebar-toggle" onclick="toggleSidebar()" title="Colapsar menú" aria-label="Colapsar o expandir menú">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18" stroke-linecap="round"/></svg>
+                <button type="button" id="sidebar-toggle" class="sidebar-toggle" onclick="toggleSidebar()" title="Contraer menú" aria-label="Contraer o expandir menú" aria-controls="app-sidebar" aria-expanded="true">
+                    <svg class="icon-panel" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18" stroke-linecap="round"/></svg>
+                    <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
                 </button>
                 <div class="logo-container">
-                    <div class="logo-text">Actúa Iglesia</div>
+                    <span class="logo-mark" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2.25v5.25M9.75 5.25h4.5M6 21.75V11.25l6-3.75 6 3.75v10.5M9.75 21.75v-5.25h4.5v5.25"/></svg>
+                    </span>
+                    <span class="logo-text">Actúa Iglesia</span>
                 </div>
             </div>
             
@@ -41,7 +57,7 @@
                 <!-- Acceso y Seguridad -->
                 @if(auth()->user()->hasRole('Administrador'))
                 <li class="nav-category">
-                    <div class="nav-category-header {{ $accesoActive ? 'expanded' : '' }}" onclick="toggleSubmenu('submenu-acceso', this)">
+                    <div class="nav-category-header {{ $accesoActive ? 'expanded' : '' }}" data-title="Acceso y Seguridad" role="button" tabindex="0" aria-controls="submenu-acceso" aria-expanded="{{ $accesoActive ? 'true' : 'false' }}" onclick="toggleSubmenu('submenu-acceso', this)">
                         <span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg><span class="cat-label">Acceso y Seguridad</span></span>
                         <span class="caret">▸</span>
                     </div>
@@ -61,7 +77,7 @@
 
                 <!-- Parametrización -->
                 <li class="nav-category">
-                    <div class="nav-category-header {{ $paramActive ? 'expanded' : '' }}" onclick="toggleSubmenu('submenu-param', this)">
+                    <div class="nav-category-header {{ $paramActive ? 'expanded' : '' }}" data-title="Parametrización" role="button" tabindex="0" aria-controls="submenu-param" aria-expanded="{{ $paramActive ? 'true' : 'false' }}" onclick="toggleSubmenu('submenu-param', this)">
                         <span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.142-.854-.108-1.204l-.527-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.781-.929l.149-.894Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg><span class="cat-label">Parametrización</span></span>
                         <span class="caret">▸</span>
                     </div>
@@ -105,7 +121,7 @@
 
                 <!-- Transaccional -->
                 <li class="nav-category">
-                    <div class="nav-category-header {{ $transacActive ? 'expanded' : '' }}" onclick="toggleSubmenu('submenu-transac', this)">
+                    <div class="nav-category-header {{ $transacActive ? 'expanded' : '' }}" data-title="Transaccional" role="button" tabindex="0" aria-controls="submenu-transac" aria-expanded="{{ $transacActive ? 'true' : 'false' }}" onclick="toggleSubmenu('submenu-transac', this)">
                         <span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg><span class="cat-label">Transaccional</span></span>
                         <span class="caret">▸</span>
                     </div>
@@ -134,7 +150,7 @@
             $reporteActive = Request::is('reportes*');
         ?>
                 <li class="nav-category">
-                    <div class="nav-category-header {{ $reporteActive ? 'expanded' : '' }}" onclick="toggleSubmenu('submenu-reporte', this)">
+                    <div class="nav-category-header {{ $reporteActive ? 'expanded' : '' }}" data-title="Reporte" role="button" tabindex="0" aria-controls="submenu-reporte" aria-expanded="{{ $reporteActive ? 'true' : 'false' }}" onclick="toggleSubmenu('submenu-reporte', this)">
                         <span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg><span class="cat-label">Reporte</span></span>
                         <span class="caret">▸</span>
                     </div>
@@ -147,15 +163,15 @@
             </ul>
 
             <div class="sidebar-user-wrap" id="user-menu-wrap">
-                <button class="sidebar-user" type="button" onclick="toggleUserMenu()" aria-label="Opciones de cuenta">
+                <button class="sidebar-user" type="button" onclick="toggleUserMenu()" aria-label="Opciones de cuenta" aria-haspopup="true" aria-controls="user-menu" aria-expanded="false">
                     <div class="user-avatar">{{ mb_strtoupper(mb_substr(trim(Auth::user()->name), 0, 2)) }}</div>
                     <span class="sidebar-user-name">{{ Auth::user()->name }}</span>
                     <svg class="user-caret" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
                 </button>
-                <div class="user-menu" id="user-menu">
-                    <form method="POST" action="{{ route('logout') }}">
+                <div class="user-menu" id="user-menu" role="menu" aria-label="Cuenta de usuario">
+                    <form method="POST" action="{{ route('logout') }}" role="none">
                         @csrf
-                        <button type="submit" class="user-menu-item">
+                        <button type="submit" class="user-menu-item" role="menuitem">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/></svg>
                             Cerrar Sesión
                         </button>
@@ -169,7 +185,7 @@
             <!-- Header -->
             <header class="header glass-panel" style="margin: 15px 15px 0 15px; border-radius: 15px;">
                 <div style="display: flex; align-items: center;">
-                    <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+                    <button type="button" class="hamburger-btn" onclick="toggleSidebar()" aria-label="Abrir menú" aria-controls="app-sidebar" aria-expanded="false">☰</button>
                     <div class="header-title"></div>
                 </div>
                 <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
@@ -210,6 +226,8 @@
             // Si el menú está colapsado: expandirlo y abrir la categoría clicada
             if (container.classList.contains('sidebar-collapsed')) {
                 container.classList.remove('sidebar-collapsed');
+                persistSidebarState();
+                updateSidebarA11y();
                 if (!submenu.classList.contains('expanded')) {
                     submenu.style.maxHeight = 'none';
                     const height = submenu.scrollHeight;
@@ -217,6 +235,7 @@
                     submenu.offsetHeight; // Force repaint
                     submenu.classList.add('expanded');
                     header.classList.add('expanded');
+                    header.setAttribute('aria-expanded', 'true');
                     submenu.style.maxHeight = height + 'px';
                 }
                 return;
@@ -231,6 +250,7 @@
                 
                 submenu.classList.remove('expanded');
                 header.classList.remove('expanded');
+                header.setAttribute('aria-expanded', 'false');
                 submenu.style.maxHeight = '0px';
             } else {
                 // Expanding: measure height by temporarily setting max-height to none
@@ -241,31 +261,97 @@
                 
                 submenu.classList.add('expanded');
                 header.classList.add('expanded');
+                header.setAttribute('aria-expanded', 'true');
                 submenu.style.maxHeight = height + 'px';
             }
         }
 
+        const SIDEBAR_KEY = 'actua_sidebar';
+
+        function isMobileView() {
+            return window.innerWidth <= 768;
+        }
+
+        // Guarda la preferencia del menú reutilizando localStorage (igual que el tema).
+        function persistSidebarState() {
+            try {
+                const collapsed = document.querySelector('.app-container').classList.contains('sidebar-collapsed');
+                localStorage.setItem(SIDEBAR_KEY, collapsed ? 'collapsed' : 'expanded');
+            } catch (e) { /* almacenamiento no disponible */ }
+        }
+
+        function updateSidebarA11y() {
+            const toggle = document.getElementById('sidebar-toggle');
+            const hamburger = document.querySelector('.hamburger-btn');
+
+            if (isMobileView()) {
+                const open = document.querySelector('.sidebar').classList.contains('open');
+                if (toggle) {
+                    toggle.setAttribute('aria-label', 'Cerrar menú');
+                    toggle.setAttribute('title', 'Cerrar menú');
+                }
+                if (hamburger) {
+                    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+                }
+            } else {
+                const collapsed = document.querySelector('.app-container').classList.contains('sidebar-collapsed');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+                    toggle.setAttribute('aria-label', collapsed ? 'Expandir menú' : 'Contraer menú');
+                    toggle.setAttribute('title', collapsed ? 'Expandir menú' : 'Contraer menú');
+                }
+                if (hamburger) {
+                    hamburger.setAttribute('aria-expanded', 'false');
+                }
+            }
+        }
+
+        // Abre/cierra el panel lateral en móvil (con fondo semitransparente).
+        function setMobileDrawer(open) {
+            document.querySelector('.sidebar').classList.toggle('open', open);
+            document.getElementById('sidebar-overlay').classList.toggle('active', open);
+            document.body.classList.toggle('nav-drawer-open', open);
+            updateSidebarA11y();
+        }
+
         function toggleSidebar() {
-            if (window.innerWidth <= 768) {
+            setUserMenu(false);
+            if (isMobileView()) {
                 const sidebar = document.querySelector('.sidebar');
-                const overlay = document.getElementById('sidebar-overlay');
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('active');
+                setMobileDrawer(!sidebar.classList.contains('open'));
             } else {
                 const container = document.querySelector('.app-container');
                 container.classList.toggle('sidebar-collapsed');
+                persistSidebarState();
+                updateSidebarA11y();
+            }
+        }
+
+        function setUserMenu(open) {
+            const wrap = document.getElementById('user-menu-wrap');
+            if (!wrap) {
+                return;
+            }
+            wrap.classList.toggle('open', open);
+            const trigger = wrap.querySelector('.sidebar-user');
+            if (trigger) {
+                trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
             }
         }
 
         function toggleUserMenu() {
             const wrap = document.getElementById('user-menu-wrap');
-            wrap.classList.toggle('open');
+            if (!wrap) {
+                return;
+            }
+            setUserMenu(!wrap.classList.contains('open'));
         }
 
+        // Cerrar el submenú de usuario al hacer clic fuera de él.
         document.addEventListener('click', function (e) {
             const wrap = document.getElementById('user-menu-wrap');
-            if (wrap && !wrap.contains(e.target)) {
-                wrap.classList.remove('open');
+            if (wrap && wrap.classList.contains('open') && !wrap.contains(e.target)) {
+                setUserMenu(false);
             }
         });
 
@@ -292,7 +378,54 @@
                 eyeClosed.style.display = 'none';
             }
         }
+
+        // Cerrar el panel móvil al elegir una opción de navegación.
+        document.querySelectorAll('.nav-menu a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                setUserMenu(false);
+                if (isMobileView()) {
+                    setMobileDrawer(false);
+                }
+            });
+        });
+
+        // Teclado: Escape cierra el panel y el submenú; Enter/Espacio abren las categorías.
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                setUserMenu(false);
+                if (isMobileView()) {
+                    setMobileDrawer(false);
+                }
+            }
+
+            const target = event.target;
+            if (target && target.classList && target.classList.contains('nav-category-header')
+                && (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar')) {
+                event.preventDefault();
+                target.click();
+            }
+        });
+
+        // Mantener coherente el estado al cambiar de tamaño de pantalla.
+        window.addEventListener('resize', function () {
+            const container = document.querySelector('.app-container');
+            if (isMobileView()) {
+                setMobileDrawer(false);
+                container.classList.remove('sidebar-collapsed');
+            } else {
+                try {
+                    container.classList.toggle('sidebar-collapsed', localStorage.getItem(SIDEBAR_KEY) === 'collapsed');
+                } catch (e) { /* almacenamiento no disponible */ }
+            }
+            updateSidebarA11y();
+        });
+
+        // Estado inicial de accesibilidad.
+        updateSidebarA11y();
     </script>
+
+    {{-- Scripts específicos de cada vista (p. ej. acciones de reportes) --}}
+    @stack('scripts')
 </body>
 </html>
 <?php /**PATH C:\laragon\www\proyecto\resources\views/layouts/app.blade.php ENDPATH**/ ?>

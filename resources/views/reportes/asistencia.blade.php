@@ -3,101 +3,107 @@
 @section('title', 'Reporte de Asistencia')
 
 @section('content')
-<style>
-    @media print {
-        .no-print { display: none !important; }
-        .sidebar, .header, .no-print { display: none !important; }
+@php
+    $periodo = null;
+    if ($desde || $hasta) {
+        $periodo = ($desde ? \Carbon\Carbon::parse($desde)->format('d/m/Y') : 'inicio')
+            . ' — ' . ($hasta ? \Carbon\Carbon::parse($hasta)->format('d/m/Y') : 'actual');
     }
-</style>
 
-<div class="glass-panel no-print" style="padding: 24px; margin-bottom: 20px;">
-    <h3 style="font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">Filtros</h3>
-    <form method="GET" action="{{ route('reportes.asistencia') }}" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+    $cursoSeleccionado = $cursoId ? $cursos->firstWhere('id', $cursoId) : null;
+
+    $meta = [];
+    if ($cursoSeleccionado) {
+        $meta['Curso'] = $cursoSeleccionado->nombre;
+    }
+
+    $indicadores = [
+        ['label' => 'Total de registros', 'value' => $registros->count(), 'tone' => 'neutral'],
+        ['label' => 'Presentes', 'value' => $resumen['presentes'], 'tone' => 'success'],
+        ['label' => 'Ausentes', 'value' => $resumen['ausentes'], 'tone' => 'danger'],
+        ['label' => 'Tardanzas', 'value' => $resumen['tardanzas'], 'tone' => 'warning'],
+        ['label' => 'Justificados', 'value' => $resumen['justificados'], 'tone' => 'info'],
+    ];
+
+    $tonosEstado = [
+        'Presente' => 'success',
+        'Ausente' => 'danger',
+        'Tardanza' => 'warning',
+        'Justificado' => 'info',
+    ];
+
+    $columnas = [
+        ['label' => 'N.º', 'align' => 'center', 'width' => '48px'],
+        ['label' => 'Miembro'],
+        ['label' => 'Curso', 'width' => '150px'],
+        ['label' => 'Sesión / Tema'],
+        ['label' => 'Fecha', 'align' => 'center', 'width' => '110px'],
+        ['label' => 'Estado', 'align' => 'center', 'width' => '110px'],
+    ];
+
+    $filas = $registros->values()->map(function ($registro, $index) use ($tonosEstado) {
+        return [
+            $index + 1,
+            $registro->miembro->nombre ?? '—',
+            $registro->sesion->curso->nombre ?? '—',
+            $registro->sesion->tema ?? '—',
+            $registro->sesion ? \Carbon\Carbon::parse($registro->sesion->fecha)->format('d/m/Y') : '—',
+            ['badge' => $registro->estado, 'tone' => $tonosEstado[$registro->estado] ?? 'info'],
+        ];
+    })->all();
+@endphp
+
+{{-- ============ INTERFAZ DE LA APLICACIÓN (no se imprime) ============ --}}
+<div class="glass-panel report-panel">
+    <div class="report-panel__head">
         <div>
-            <label class="form-label">Curso</label>
-            <select name="curso_id" class="form-control" style="min-width: 200px;">
+            <h2 class="report-panel__title">Reportes</h2>
+            <p class="report-panel__subtitle">Reporte de asistencia</p>
+        </div>
+    </div>
+
+    <form method="GET" action="{{ route('reportes.asistencia') }}" class="report-filters">
+        <div class="report-field">
+            <label class="form-label" for="filtro-curso">Curso</label>
+            <select name="curso_id" id="filtro-curso" class="form-control">
                 <option value="">Todos los cursos</option>
                 @foreach($cursos as $curso)
-
                     <option value="{{ $curso->id }}" {{ $cursoId == $curso->id ? 'selected' : '' }}>{{ $curso->nombre }}</option>
-                
-@endforeach
+                @endforeach
             </select>
         </div>
-        <div>
-            <label class="form-label">Desde</label>
-            <input type="date" name="desde" class="form-control" value="{{ $desde }}">
+        <div class="report-field">
+            <label class="form-label" for="filtro-desde">Desde</label>
+            <input type="date" name="desde" id="filtro-desde" class="form-control" value="{{ $desde }}">
         </div>
-        <div>
-            <label class="form-label">Hasta</label>
-            <input type="date" name="hasta" class="form-control" value="{{ $hasta }}">
+        <div class="report-field">
+            <label class="form-label" for="filtro-hasta">Hasta</label>
+            <input type="date" name="hasta" id="filtro-hasta" class="form-control" value="{{ $hasta }}">
         </div>
-        <div>
-            <button type="submit" class="btn" style="width: auto;">Generar Reporte</button>
+        <div class="report-field report-field--action">
+            <button type="submit" class="report-btn report-btn--primary">Aplicar filtros</button>
         </div>
     </form>
 </div>
 
-<div class="glass-panel no-print" style="padding: 16px 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-    <a href="{{ route('reportes.index') }}" class="btn" style="width: auto; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary);">← Volver a Reportes</a>
-    <button onclick="window.print()" class="btn" style="width: auto;">🖨️ Imprimir</button>
-</div>
+<x-report.actions :back-route="route('reportes.index')" />
 
-<div class="glass-panel" style="padding: 24px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid var(--card-border); padding-bottom: 12px;">
-        <div>
-            <h3 style="font-weight: 800; color: var(--text-primary);">Iglesia Actúa</h3>
-            <p style="color: var(--text-secondary); font-size: 13px;">Reporte de Asistencia</p>
-        </div>
-        <div style="text-align: right; font-size: 13px; color: var(--text-secondary);">
-            <div>Generado: {{ now()->translatedFormat('d/m/Y H:i') }}</div>
-            @if($desde || $hasta)
-            <div>Periodo: {{ $desde ? \Carbon\Carbon::parse($desde)->format('d/m/Y') : 'inicio' }} - {{ $hasta ? \Carbon\Carbon::parse($hasta)->format('d/m/Y') : 'actual' }}</div>
-            @endif
-            @if($cursoId) <div>Curso: {{ $cursos->firstWhere('id', $cursoId)->nombre ?? '' }}</div> @endif
-        </div>
-    </div>
+{{-- ============ DOCUMENTO DEL REPORTE (se imprime / exporta) ============ --}}
+<x-report.layout
+    title="Reporte de Asistencia"
+    subtitle="Resumen de asistencia por curso y rango de fechas"
+    :generated-at="now()"
+    :period="$periodo"
+    :meta="$meta"
+>
+    <x-slot:summary>
+        <x-report.summary :items="$indicadores" />
+    </x-slot:summary>
 
-    <div style="display: flex; gap: 16px; margin-bottom: 18px; flex-wrap: wrap;">
-        <div style="background: rgba(47,158,68,.12); padding: 10px 16px; border-radius: 10px;"><b>{{ $resumen['presentes'] }}</b> Presentes</div>
-        <div style="background: rgba(220,38,38,.12); padding: 10px 16px; border-radius: 10px;"><b>{{ $resumen['ausentes'] }}</b> Ausentes</div>
-        <div style="background: rgba(245,158,11,.12); padding: 10px 16px; border-radius: 10px;"><b>{{ $resumen['tardanzas'] }}</b> Tardanzas</div>
-        <div style="background: rgba(99,102,241,.12); padding: 10px 16px; border-radius: 10px;"><b>{{ $resumen['justificados'] }}</b> Justificados</div>
-    </div>
-
-    @if($registros->isEmpty())
-        <p style="color: var(--text-secondary);">No hay registros de asistencia que coincidan con los filtros.</p>
-    @else
-    <div style="overflow-x: auto;">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Miembro</th>
-                    <th>Curso</th>
-                    <th>Sesión / Tema</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($registros as $i => $r)
-
-                <tr>
-                    <td>{{ $i + 1 }}</td>
-                    <td>{{ $r->miembro->nombre ?? '-' }}</td>
-                    <td>{{ $r->sesion->curso->nombre ?? '-' }}</td>
-                    <td>{{ $r->sesion->tema ?? '-' }}</td>
-                    <td>{{ $r->sesion ? \Carbon\Carbon::parse($r->sesion->fecha)->format('d/m/Y') : '-' }}</td>
-                    <td>
-                        <span class="badge @if($r->estado == 'Presente') badge-active @elseif($r->estado == 'Ausente') badge-inactive @else badge-warning @endif">{{ $r->estado }}</span>
-                    </td>
-                </tr>
-                
-@endforeach
-            </tbody>
-        </table>
-    </div>
-    @endif
-</div>
+    <x-report.table
+        :columns="$columnas"
+        :rows="$filas"
+        empty="No hay registros de asistencia que coincidan con los filtros aplicados."
+    />
+</x-report.layout>
 @endsection
