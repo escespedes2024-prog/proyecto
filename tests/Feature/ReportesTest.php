@@ -131,4 +131,23 @@ class ReportesTest extends TestCase
         $response->assertSee('window.print()', false);
         $response->assertSee('data-report-preview', false);
     }
+
+    public function test_tabla_del_reporte_envuelve_scroll_sin_afectar_la_impresion(): void
+    {
+        $this->miembro(['nombre' => 'Ana Scroll Test']);
+
+        // En pantalla la tabla se envuelve para que su scroll no desborde la hoja.
+        $this->actingAs($this->admin)
+            ->get('/reportes/miembros')
+            ->assertOk()
+            ->assertSee('report-table-scroll', false);
+
+        // El scroll queda aislado en pantalla y se libera al imprimir/exportar PDF.
+        $css = file_get_contents(public_path('css/style.css'));
+        $this->assertStringContainsString('@media screen and (max-width: 768px)', $css);
+        $this->assertMatchesRegularExpression(
+            '/@media print.*\.report-table-scroll\s*\{\s*overflow:\s*visible/s',
+            $css
+        );
+    }
 }

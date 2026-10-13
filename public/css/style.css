@@ -1415,7 +1415,7 @@ input[type="date"] {
 /* Resumen estadístico */
 .report-summary {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
     gap: 10px;
     margin-bottom: 18px;
 }
@@ -1424,6 +1424,7 @@ input[type="date"] {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-width: 0;
     padding: 10px 14px;
     border: 1px solid #e0e0da;
     border-left: 4px solid #9aa0a6;
@@ -1472,6 +1473,14 @@ input[type="date"] {
     border-bottom: 1px solid #dddddd;
 }
 
+/* Caja con scroll propio: si la tabla no cabe, solo ella se desplaza. */
+.report-table-scroll {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .report-table {
     width: 100%;
     border-collapse: collapse;
@@ -1495,6 +1504,8 @@ input[type="date"] {
     border: 1px solid #dcdcd7;
     padding: 7px 10px;
     vertical-align: top;
+    /* Nombres, descripciones o correos largos se ajustan en lugar de desbordar. */
+    overflow-wrap: anywhere;
 }
 
 .report-table tbody tr:nth-child(even) {
@@ -1615,6 +1626,100 @@ body.report-preview-mode .report-document {
     transform: translateX(-50%) translateY(0);
 }
 
+/* ---------- Vista previa responsive (solo pantalla) ----------
+   Corrige el desbordamiento horizontal en móviles y tabletas:
+   reduce paddings, apila encabezado y pie, y contiene el scroll
+   de las tablas en su propia caja. La impresión no se ve afectada
+   porque estas reglas viven dentro de @media screen. */
+@media screen and (max-width: 768px) {
+    .report-panel {
+        padding: 16px;
+    }
+
+    /* La hoja se estrecha sin perder márgenes internos. */
+    .report-document {
+        padding: 22px 18px 18px;
+        border-radius: 6px;
+    }
+
+    /* El encabezado institucional se apila para no forzar ancho. */
+    .report-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .report-header__meta {
+        min-width: 0;
+        text-align: left;
+    }
+
+    .report-header__meta-item {
+        align-items: flex-start;
+    }
+
+    .report-summary {
+        grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
+    }
+
+    /* El pie se ajusta en varias líneas. */
+    .report-footer {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .report-footer__text {
+        max-width: 100%;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 6px 8px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .report-document {
+        padding: 18px 14px 16px;
+        font-size: 12.5px;
+    }
+
+    .report-header__title {
+        font-size: 18px;
+    }
+
+    .report-summary {
+        grid-template-columns: repeat(auto-fit, minmax(min(96px, 100%), 1fr));
+    }
+
+    .report-summary__value {
+        font-size: 19px;
+    }
+
+    /* Filtros y acciones a ancho completo: apilados y cómodos de pulsar. */
+    .report-field {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .report-filters {
+        gap: 10px;
+    }
+
+    .report-field--action,
+    .report-field--action .report-btn {
+        width: 100%;
+    }
+
+    .report-actions__group {
+        width: 100%;
+    }
+
+    .report-actions__group .report-btn {
+        flex: 1 1 auto;
+    }
+}
+
 /* ============================================================
    IMPRESIÓN PROFESIONAL (papel A4)
    ============================================================ */
@@ -1680,6 +1785,11 @@ body.report-preview-mode .report-document {
         line-height: 1.4 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+    }
+
+    /* En impresión la tabla fluye en la hoja: sin scroll ni recorte. */
+    .report-table-scroll {
+        overflow: visible !important;
     }
 
     .report-header {

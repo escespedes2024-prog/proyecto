@@ -27,35 +27,39 @@
     @if(count($rows) === 0)
         <p class="report-empty">{{ $empty }}</p>
     @else
-        <table class="report-table">
-            <thead>
-                <tr>
-                    @foreach($columns as $column)
-                        <th @class(['is-center' => ($column['align'] ?? null) === 'center', 'is-right' => ($column['align'] ?? null) === 'right'])
-                            @if(!empty($column['width'])) style="width: {{ $column['width'] }}" @endif>
-                            {{ $column['label'] ?? '' }}
-                        </th>
-                    @endforeach
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($rows as $row)
+        {{-- El scroll horizontal (si la tabla lo necesitara) queda contenido aquí:
+             nunca desplaza ni desborda el resto de la vista previa. --}}
+        <div class="report-table-scroll">
+            <table class="report-table">
+                <thead>
                     <tr>
-                        @foreach($columns as $index => $column)
-                            @php $cell = $row[$index] ?? ''; @endphp
-                            <td @class(['is-center' => ($column['align'] ?? null) === 'center', 'is-right' => ($column['align'] ?? null) === 'right'])>
-                                @if(is_array($cell) && isset($cell['badge']))
-                                    <span class="report-badge report-badge--{{ $cell['tone'] ?? 'neutral' }}">{{ $cell['badge'] }}</span>
-                                @elseif(is_array($cell))
-                                    {{ $cell['text'] ?? '' }}
-                                @else
-                                    {{ $cell }}
-                                @endif
-                            </td>
+                        @foreach($columns as $column)
+                            <th @class(['is-center' => ($column['align'] ?? null) === 'center', 'is-right' => ($column['align'] ?? null) === 'right'])
+                                @if(!empty($column['width'])) style="width: {{ $column['width'] }}" @endif>
+                                {{ $column['label'] ?? '' }}
+                            </th>
                         @endforeach
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach($rows as $row)
+                        <tr>
+                            @foreach($columns as $index => $column)
+                                @php $cell = $row[$index] ?? ''; @endphp
+                                <td @class(['is-center' => ($column['align'] ?? null) === 'center', 'is-right' => ($column['align'] ?? null) === 'right'])>
+                                    @if(is_array($cell) && isset($cell['badge']))
+                                        <span class="report-badge report-badge--{{ $cell['tone'] ?? 'neutral' }}">{{ $cell['badge'] }}</span>
+                                    @elseif(is_array($cell))
+                                        {{ $cell['text'] ?? '' }}
+                                    @else
+                                        {{ $cell }}
+                                    @endif
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     @endif
 </section>
