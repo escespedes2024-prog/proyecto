@@ -62,7 +62,9 @@
     </div>
 
     <div style="display: flex; gap: 15px; margin-top: 30px;">
+        @if(auth()->user()->puede('miembros', 'editar'))
         <a href="{{ route('miembros.edit', $miembro->id) }}" class="btn" style="text-decoration: none; text-align: center;">Editar</a>
+        @endif
         <a href="{{ route('miembros.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Volver</a>
     </div>
 </div>

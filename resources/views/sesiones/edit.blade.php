@@ -82,11 +82,25 @@
     const fechaInput = document.getElementById('fecha');
     const horaInput = document.getElementById('hora');
 
+    // Devuelve YYYY-MM-DD usando la fecha LOCAL del navegador.
+    // No usar toISOString() porque convierte a UTC y desfasa un día.
+    function fechaLocalISO(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const dia = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${dia}`;
+    }
+
+    // Los días llegan como texto ("1"), así que comparamos numéricamente
+    function diasIncluyen(dias, iso) {
+        return (dias || []).map(Number).includes(iso);
+    }
+
     function esDiaPermitido(fecha, cursoId) {
         const data = cursosData[cursoId];
         if (!data || !data.dias_semana || data.dias_semana.length === 0) return true;
         const iso = fecha.getDay() === 0 ? 7 : fecha.getDay();
-        return data.dias_semana.includes(iso);
+        return diasIncluyen(data.dias_semana, iso);
     }
 
     function siguienteFechaPermitida(cursoId, desde) {
@@ -99,9 +113,9 @@
         }
         for (let i = 0; i < 366; i++) {
             const iso = fecha.getDay() === 0 ? 7 : fecha.getDay();
-            if ((!data.dias_semana || data.dias_semana.length === 0 || data.dias_semana.includes(iso))
-                && (!data.f_fin || fecha.toISOString().split('T')[0] <= data.f_fin)) {
-                return fecha.toISOString().split('T')[0];
+            if ((!data.dias_semana || data.dias_semana.length === 0 || diasIncluyen(data.dias_semana, iso))
+                && (!data.f_fin || fechaLocalISO(fecha) <= data.f_fin)) {
+                return fechaLocalISO(fecha);
             }
             fecha.setDate(fecha.getDate() + 1);
         }
@@ -115,8 +129,15 @@
 
         horaInput.value = data.hora_inicio || '';
 
+        // Limita el selector de fecha al rango del curso
+        fechaInput.min = data.f_inicio || '';
+        fechaInput.max = data.f_fin || '';
+        fechaInput.setCustomValidity('');
+
         const actual = fechaInput.value;
-        if (!actual || !esDiaPermitido(new Date(actual + 'T00:00:00'), cursoId)) {
+        if (!actual || !esDiaPermitido(new Date(actual + 'T00:00:00'), cursoId)
+            || (data.f_inicio && actual < data.f_inicio)
+            || (data.f_fin && actual > data.f_fin)) {
             const prox = siguienteFechaPermitida(cursoId, actual || undefined);
             if (prox) fechaInput.value = prox;
         }
@@ -133,9 +154,14 @@
         if (!cursoId) return;
         const val = this.value;
         if (!val) return;
+        const data = cursosData[cursoId];
         const fecha = new Date(val + 'T00:00:00');
         if (!esDiaPermitido(fecha, cursoId)) {
-            this.setCustomValidity('Este curso solo se dicta los días seleccionados en su horario.');
+            this.setCustomValidity('Este curso se dicta los días ' + (data.dias_nombres || '') + '. Elige una fecha dentro del horario asignado.');
+        } else if (data.f_inicio && val < data.f_inicio) {
+            this.setCustomValidity('La fecha es anterior al inicio del curso.');
+        } else if (data.f_fin && val > data.f_fin) {
+            this.setCustomValidity('La fecha es posterior al fin del curso.');
         } else {
             this.setCustomValidity('');
         }

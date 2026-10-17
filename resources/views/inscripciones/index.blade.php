@@ -6,10 +6,12 @@
 <div class="glass-panel" style="padding: 24px; margin-bottom: 20px;">
     <h3 style="font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">Buscar Curso</h3>
     <form method="GET" action="{{ route('inscripciones.index') }}" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+        @if(auth()->user()->puede('inscripciones', 'buscar'))
         <div style="flex: 1; min-width: 250px;">
             <label class="form-label">Nombre del curso</label>
             <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Buscar por nombre...">
         </div>
+        @endif
         <div>
             <label class="form-label">Pago</label>
             <select name="tipo" class="form-control" style="min-width: 160px;">
@@ -71,7 +73,9 @@
                         </td>
                         <td>
                             <div class="action-buttons">
+                                @if(auth()->user()->puede('inscripciones', 'crear'))
                                 <a href="{{ route('inscripciones.gestion', $curso->id) }}" class="btn-icon" title="Inscribirse al curso"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg></a>
+                                @endif
                             </div>
                         </td>
                     </tr>

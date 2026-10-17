@@ -15,10 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
+            'permiso' => \App\Http\Middleware\CheckPermiso::class,
         ]);
 
         $middleware->web(append: [
             \App\Http\Middleware\SecureHeaders::class,
+            \App\Http\Middleware\CheckPermiso::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

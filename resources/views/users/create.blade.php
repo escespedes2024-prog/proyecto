@@ -18,6 +18,7 @@
         </div>
     @endif
 
+    @if(auth()->user()->puede('usuarios', 'crear'))
     <form method="POST" action="{{ route('users.store') }}">
         @csrf
 
@@ -56,5 +57,6 @@
             <a href="{{ route('users.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
         </div>
     </form>
+    @endif
 </div>
 @endsection

@@ -8,7 +8,9 @@
         <h2 style="font-weight: 700; color: var(--text-primary);">Detalle de Egreso</h2>
         <div style="display: flex; gap: 10px;">
             @if(!$egreso->trashed())
+                @if(auth()->user()->puede('egresos', 'editar'))
                 <a href="{{ route('egresos.edit', $egreso->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
+                @endif
             @endif
             <a href="{{ route('egresos.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
         </div>

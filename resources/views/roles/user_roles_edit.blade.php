@@ -43,6 +43,7 @@
         </div>
     @endif
 
+    @if(auth()->user()->puede('roles', 'editar'))
     <form method="POST" action="{{ route('roles.user.save') }}" class="js-assign-roles-form">
         @csrf
         <input type="hidden" name="user_id" value="{{ $user->id }}">
@@ -72,6 +73,7 @@
             <a href="{{ route('roles.user') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Volver</a>
         </div>
     </form>
+    @endif
 </div>
 @endsection
 

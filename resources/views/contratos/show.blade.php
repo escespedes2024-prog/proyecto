@@ -8,8 +8,12 @@
         <h2 style="font-weight: 700; color: var(--text-primary);">Detalle de Contrato</h2>
         <div style="display: flex; gap: 10px;">
             @if(!$contrato->trashed())
+                @if(auth()->user()->puede('contratos', 'editar'))
                 <a href="{{ route('contratos.edit', $contrato->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
+                @endif
+                @if(auth()->user()->puede('contratos', 'editar'))
                 <a href="{{ route('contratos.renovar', $contrato->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Renovar</a>
+                @endif
             @endif
             <a href="{{ route('contratos.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
         </div>

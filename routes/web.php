@@ -18,6 +18,7 @@ use App\Http\Controllers\EgresoController;
 use App\Http\Controllers\ContratoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermisoController;
 use App\Http\Controllers\PagoCursoController;
 use App\Http\Controllers\InscripcionController;
 use App\Http\Controllers\AsistenciaController;
@@ -52,8 +53,8 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     Route::get('reportes/asistencia', [ReporteController::class, 'asistencia'])->name('reportes.asistencia');
     Route::get('reportes/financiero', [ReporteController::class, 'financiero'])->name('reportes.financiero');
 
-    // Acceso y Seguridad (solo Administrador)
-    Route::middleware('role:Administrador')->group(function () {
+    // Acceso y Seguridad (permisos por rol: usuarios, roles)
+    Route::group([], function () {
         Route::post('users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
         Route::resource('users', UserController::class);
 
@@ -65,8 +66,15 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::resource('roles', RoleController::class);
     });
 
-    // Parametrización y módulos operativos (Administrador | Secretario)
-    Route::middleware('role:Administrador,Secretario')->group(function () {
+    // Administrar Permisos (solo Administrador)
+    Route::middleware('role:Administrador')->group(function () {
+        Route::get('permisos', [PermisoController::class, 'index'])->name('permisos.index');
+        Route::get('permisos/{role}', [PermisoController::class, 'edit'])->name('permisos.edit');
+        Route::put('permisos/{role}', [PermisoController::class, 'update'])->name('permisos.update');
+    });
+
+    // Parametrización y módulos operativos (permisos por rol)
+    Route::group([], function () {
         // 1. Cargos
         Route::post('cargos/{id}/restore', [CargoController::class, 'restore'])->name('cargos.restore');
         Route::resource('cargos', CargoController::class);
@@ -127,8 +135,8 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::post('asistencia/registrar/{sesion}/marcar-todos', [AsistenciaController::class, 'marcarTodos'])->name('asistencia.marcarTodos');
     });
 
-    // Finanzas (Administrador | Tesorero)
-    Route::middleware('role:Administrador,Tesorero')->group(function () {
+    // Finanzas (permisos por rol: cultos, ingresos, egresos, contratos)
+    Route::group([], function () {
         // 10. Cultos
         Route::post('cultos/{id}/restore', [CultoController::class, 'restore'])->name('cultos.restore');
         Route::resource('cultos', CultoController::class);

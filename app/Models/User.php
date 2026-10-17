@@ -21,6 +21,13 @@ class User extends Authenticatable
     use HasFactory, Notifiable, SoftDeletes;
 
     /**
+     * Caché en memoria de los permisos resueltos del usuario.
+     *
+     * @var array<string, bool>|null
+     */
+    protected ?array $permisosResueltos = null;
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -41,5 +48,61 @@ class User extends Authenticatable
     public function hasRole(string $roleName): bool
     {
         return $this->roles()->where('nombre', $roleName)->exists();
+    }
+
+    public function esAdministrador(): bool
+    {
+        return $this->hasRole('Administrador');
+    }
+
+    /**
+     * Indica si el usuario (a través de alguno de sus roles) puede realizar
+     * la acción indicada sobre el módulo. El rol Administrador siempre puede.
+     */
+    public function puede(string $modulo, string $accion): bool
+    {
+        $permisos = $this->resolverPermisos();
+
+        if (!empty($permisos['*'])) {
+            return true;
+        }
+
+        return !empty($permisos["{$modulo}.{$accion}"]);
+    }
+
+    /**
+     * Limpia la caché de permisos (útil si los roles cambian en la petición).
+     */
+    public function limpiarPermisos(): void
+    {
+        $this->permisosResueltos = null;
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    private function resolverPermisos(): array
+    {
+        if ($this->permisosResueltos !== null) {
+            return $this->permisosResueltos;
+        }
+
+        $mapa = [];
+
+        foreach ($this->roles()->with('permisos')->get() as $role) {
+            if ($role->nombre === 'Administrador') {
+                return $this->permisosResueltos = ['*' => true];
+            }
+
+            foreach ($role->permisos as $permiso) {
+                foreach (['ver', 'crear', 'editar', 'eliminar', 'buscar'] as $accion) {
+                    if ($permiso->{$accion}) {
+                        $mapa["{$permiso->modulo}.{$accion}"] = true;
+                    }
+                }
+            }
+        }
+
+        return $this->permisosResueltos = $mapa;
     }
 }

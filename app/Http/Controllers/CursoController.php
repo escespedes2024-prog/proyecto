@@ -41,9 +41,7 @@ class CursoController extends Controller
             ->orderBy('fecha_inscripcion')
             ->get();
 
-        $miembrosDisponibles = Inscripcion::getMiembrosDisponibles($id);
-
-        return view('cursos.show', compact('curso', 'inscripciones', 'miembrosDisponibles'));
+        return view('cursos.show', compact('curso', 'inscripciones'));
     }
 
     public function edit($id)

@@ -7,7 +7,9 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="font-weight: 700; color: var(--text-primary);">Detalle del Seguimiento</h2>
         <div style="display: flex; gap: 10px;">
+            @if(auth()->user()->puede('seguimiento', 'editar'))
             <a href="{{ route('seguimiento.edit', $seguimiento->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">Editar</a>
+            @endif
             <a href="{{ route('seguimiento.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Volver</a>
         </div>
     </div>

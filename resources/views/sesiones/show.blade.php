@@ -7,8 +7,12 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="font-weight: 700; color: var(--text-primary);">Detalle de Sesión</h2>
         <div style="display: flex; gap: 10px;">
+            @if(auth()->user()->puede('asistencia', 'crear'))
             <a href="{{ route('asistencia.registrar', ['sesion_id' => $sesion->id]) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">📋 Registrar Asistencia</a>
+            @endif
+            @if(auth()->user()->puede('sesiones', 'editar'))
             <a href="{{ route('sesiones.edit', $sesion->id) }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">Editar</a>
+            @endif
             <a href="{{ route('sesiones.index') }}" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none;">← Volver</a>
         </div>
     </div>

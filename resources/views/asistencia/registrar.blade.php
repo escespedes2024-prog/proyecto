@@ -43,10 +43,12 @@
             <div style="color: var(--text-secondary); font-size: 14px;"><b>Tema:</b> {{ $sesion->tema }}</div>
         </div>
 
+        @if(auth()->user()->puede('asistencia', 'crear'))
         <form method="POST" action="{{ route('asistencia.marcarTodos', $sesion->id) }}" style="display: inline;" onsubmit="return confirm('¿Marcar a todos los inscritos como presentes?');">
             @csrf
             <button type="submit" class="btn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">✓ Marcar Todos Presentes</button>
         </form>
+        @endif
     </div>
 
     <div style="display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap;">
@@ -63,6 +65,7 @@
     @if($inscritos->isEmpty())
         <p style="color: var(--text-secondary);">No hay miembros inscritos para esta sesión.</p>
     @else
+    @if(auth()->user()->puede('asistencia', 'crear'))
     <form method="POST" action="{{ route('asistencia.store', $sesion->id) }}">
         @csrf
 
@@ -103,6 +106,7 @@
             <a href="{{ route('asistencia.index') }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
         </div>
     </form>
+    @endif
     @endif
 </div>
 @endif

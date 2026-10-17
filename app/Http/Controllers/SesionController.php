@@ -106,6 +106,7 @@ class SesionController extends Controller
                 'hora_inicio' => $c->hora_inicio ? substr((string) $c->hora_inicio, 0, 5) : null,
                 'hora_fin' => $c->hora_fin ? substr((string) $c->hora_fin, 0, 5) : null,
                 'dias_semana' => $c->dias_semana ?? [],
+                'dias_nombres' => $c->dias_nombres,
                 'f_inicio' => $c->f_inicio ? \Carbon\Carbon::parse($c->f_inicio)->format('Y-m-d') : null,
                 'f_fin' => $c->f_fin ? \Carbon\Carbon::parse($c->f_fin)->format('Y-m-d') : null,
                 'docentes' => $c->docentes->pluck('id')->toArray(),
@@ -167,8 +168,10 @@ class SesionController extends Controller
         $fin = Carbon::parse($curso->f_fin);
         $hora = substr((string) $curso->hora_inicio, 0, 5);
 
+        $diasCurso = array_map('intval', $curso->dias_semana ?? []);
+
         while ($fecha->lte($fin)) {
-            if (in_array($fecha->dayOfWeekIso, $curso->dias_semana)) {
+            if (in_array($fecha->dayOfWeekIso, $diasCurso, true)) {
                 $clave = $fecha->toDateString() . ' ' . $hora;
 
                 if (!in_array($clave, $existentes)) {
@@ -210,7 +213,9 @@ class SesionController extends Controller
             $errores['fecha'] = 'La fecha es posterior al fin del curso (' . Carbon::parse($curso->f_fin)->format('d/m/Y') . ').';
         }
 
-        if (!empty($curso->dias_semana) && !in_array($fecha->dayOfWeekIso, $curso->dias_semana)) {
+        $diasCurso = array_map('intval', $curso->dias_semana ?? []);
+
+        if (!empty($diasCurso) && !in_array($fecha->dayOfWeekIso, $diasCurso, true)) {
             $errores['fecha'] = 'Este curso se dicta los días ' . $curso->dias_nombres . '. Elige una fecha dentro del horario asignado.';
         }
 

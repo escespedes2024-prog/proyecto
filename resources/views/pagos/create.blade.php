@@ -35,6 +35,7 @@
         </div>
     @endif
 
+    @if(auth()->user()->puede('inscripciones', 'crear'))
     <form method="POST" action="{{ route('pagos.store', $inscripcion->id) }}">
         @csrf
 
@@ -70,5 +71,6 @@
             <a href="{{ route('inscripciones.gestion', $inscripcion->curso_id) }}" class="btn" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; text-align: center;">Cancelar</a>
         </div>
     </form>
+    @endif
 </div>
 @endsection
