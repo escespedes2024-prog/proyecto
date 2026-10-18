@@ -18,8 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'permiso' => \App\Http\Middleware\CheckPermiso::class,
         ]);
 
+        // Global: se aplica a TODAS las respuestas, incluidas 404 y errores
+        // (las cabeceras de rutas web no cubren respuestas sin ruta coincidente).
+        $middleware->prepend(\App\Http\Middleware\SecureHeaders::class);
+
         $middleware->web(append: [
-            \App\Http\Middleware\SecureHeaders::class,
             \App\Http\Middleware\CheckPermiso::class,
         ]);
     })

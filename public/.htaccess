@@ -23,3 +23,13 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# Cabeceras de seguridad para archivos servidos directamente (estáticos), que no
+# pasan por Laravel. OWASP A05 / CWE-693.
+<IfModule mod_headers.c>
+    <FilesMatch "\.(txt|xml|css|js|mjs|json|map|png|jpe?g|gif|svg|ico|webp|woff2?|ttf|eot)$">
+        Header always set X-Content-Type-Options "nosniff"
+        Header always set X-Frame-Options "SAMEORIGIN"
+        Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    </FilesMatch>
+</IfModule>
