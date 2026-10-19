@@ -29,7 +29,7 @@ class MinisterioRequest extends FormRequest
 
             if ($type && $id) {
                 $tabla = $type === 'App\Models\Miembro' ? 'miembros' : 'lideres_iglesia';
-                if (!\DB::table($tabla)->where('id', $id)->exists()) {
+                if (! \DB::table($tabla)->where('id', $id)->exists()) {
                     $validator->errors()->add('liderable_id', 'El líder seleccionado no existe.');
                 }
             }

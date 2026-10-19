@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PagoCurso;
-use App\Models\Inscripcion;
 use App\Models\Ingreso;
+use App\Models\Inscripcion;
+use App\Models\PagoCurso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -29,7 +29,7 @@ class PagoCursoController extends Controller
         abort_unless($inscripcion->curso->tiene_pago, 403, 'Este curso no tiene costo de inscripción.');
 
         $validated = $request->validate([
-            'monto' => ['required', 'numeric', 'min:0.01', 'max:' . $inscripcion->saldo_pendiente],
+            'monto' => ['required', 'numeric', 'min:0.01', 'max:'.$inscripcion->saldo_pendiente],
             'fecha_pago' => ['required', 'date'],
             'metodo_pago' => ['required', 'string', 'in:Efectivo,Transferencia,Tarjeta'],
             'comprobante' => ['nullable', 'string', 'max:255'],
@@ -44,7 +44,7 @@ class PagoCursoController extends Controller
             $pago->ingreso()->create([
                 'monto_total' => $pago->monto,
                 'fecha' => $pago->fecha_pago,
-                'tipo' => 'Inscripción Curso: ' . $inscripcion->curso->nombre,
+                'tipo' => 'Inscripción Curso: '.$inscripcion->curso->nombre,
                 'metodo_pago' => $pago->metodo_pago,
             ]);
         });

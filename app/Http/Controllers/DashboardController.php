@@ -15,7 +15,6 @@ use App\Models\Inscripcion;
 use App\Models\LiderIglesia;
 use App\Models\Miembro;
 use App\Models\Ministerio;
-use App\Models\PagoCurso;
 use App\Models\Sesion;
 use Illuminate\Support\Facades\DB;
 

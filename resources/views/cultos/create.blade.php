@@ -20,13 +20,13 @@
         @csrf
 
         <div class="form-group">
-            <label class="form-label">Nombre del Culto</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
+            <label for="nombre" class="form-label">Nombre del Culto</label>
+            <input id="nombre" type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Día de la Semana</label>
-            <select name="dia_semana" class="form-control" required>
+            <label for="dia_semana" class="form-label">Día de la Semana</label>
+            <select id="dia_semana" name="dia_semana" class="form-control" required>
                 <option value="">Seleccione un día...</option>
                 @foreach(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as $dia)
                     <option value="{{ $dia }}" {{ old('dia_semana') == $dia ? 'selected' : '' }}>{{ $dia }}</option>
@@ -35,13 +35,13 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Hora</label>
-            <input type="time" name="hora" class="form-control" value="{{ old('hora') }}" required>
+            <label for="hora" class="form-label">Hora</label>
+            <input id="hora" type="time" name="hora" class="form-control" value="{{ old('hora') }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Líder a Cargo</label>
-            <select name="id_lider_iglesia" class="form-control" required>
+            <label for="id_lider_iglesia" class="form-label">Líder a Cargo</label>
+            <select id="id_lider_iglesia" name="id_lider_iglesia" class="form-control" required>
                 <option value="">Seleccione un líder...</option>
                 @foreach($lideres as $lider)
                     <option value="{{ $lider->id }}" {{ old('id_lider_iglesia') == $lider->id ? 'selected' : '' }}>{{ $lider->nombre }}</option>
@@ -50,8 +50,8 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Descripción</label>
-            <textarea name="descripcion" class="form-control" rows="3">{{ old('descripcion') }}</textarea>
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea id="descripcion" name="descripcion" class="form-control" rows="3">{{ old('descripcion') }}</textarea>
         </div>
 
         <div style="display: flex; gap: 15px; margin-top: 30px;">

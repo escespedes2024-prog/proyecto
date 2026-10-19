@@ -21,19 +21,19 @@
         @method('PUT')
 
         <div class="form-group">
-            <label class="form-label">Monto Total (Bs)</label>
-            <input type="number" step="0.01" name="monto_total" class="form-control" value="{{ old('monto_total', $ingreso->monto_total) }}" required autocomplete="off">
+            <label for="monto_total" class="form-label">Monto Total (Bs)</label>
+            <input id="monto_total" type="number" step="0.01" name="monto_total" class="form-control" value="{{ old('monto_total', $ingreso->monto_total) }}" required autocomplete="off">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label class="form-label">Fecha</label>
-                <input type="date" name="fecha" class="form-control" value="{{ old('fecha', $ingreso->fecha) }}" required>
+                <label for="fecha" class="form-label">Fecha</label>
+                <input id="fecha" type="date" name="fecha" class="form-control" value="{{ old('fecha', $ingreso->fecha) }}" required>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Método de Pago</label>
-                <select name="metodo_pago" class="form-control" required>
+                <label for="metodo_pago" class="form-label">Método de Pago</label>
+                <select id="metodo_pago" name="metodo_pago" class="form-control" required>
                     <option value="Efectivo" {{ old('metodo_pago', $ingreso->metodo_pago) == 'Efectivo' ? 'selected' : '' }}>Efectivo</option>
                     <option value="Transferencia" {{ old('metodo_pago', $ingreso->metodo_pago) == 'Transferencia' ? 'selected' : '' }}>Transferencia</option>
                     <option value="Tarjeta" {{ old('metodo_pago', $ingreso->metodo_pago) == 'Tarjeta' ? 'selected' : '' }}>Tarjeta</option>
@@ -42,8 +42,8 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Tipo de Ingreso</label>
-            <select name="tipo" class="form-control" required>
+            <label for="tipo" class="form-label">Tipo de Ingreso</label>
+            <select id="tipo" name="tipo" class="form-control" required>
                 <option value="Diezmo" {{ old('tipo', $ingreso->tipo) == 'Diezmo' ? 'selected' : '' }}>Diezmo</option>
                 <option value="Ofrenda" {{ old('tipo', $ingreso->tipo) == 'Ofrenda' ? 'selected' : '' }}>Ofrenda</option>
                 <option value="Donación" {{ old('tipo', $ingreso->tipo) == 'Donación' ? 'selected' : '' }}>Donación</option>
@@ -52,8 +52,8 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Asociar a Actividad (Opcional)</label>
-            <select name="id_actividad" class="form-control">
+            <label for="id_actividad" class="form-label">Asociar a Actividad (Opcional)</label>
+            <select id="id_actividad" name="id_actividad" class="form-control">
                 <option value="">Ninguna...</option>
                 @foreach($actividades as $act)
                     <option value="{{ $act->id }}" {{ old('id_actividad', $ingreso->id_actividad) == $act->id ? 'selected' : '' }}>{{ $act->nombre }}</option>
@@ -62,8 +62,8 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Asociar a Culto (Opcional)</label>
-            <select name="id_culto" class="form-control">
+            <label for="id_culto" class="form-label">Asociar a Culto (Opcional)</label>
+            <select id="id_culto" name="id_culto" class="form-control">
                 <option value="">Ninguno...</option>
                 @foreach($cultos as $c)
                     <option value="{{ $c->id }}" {{ old('id_culto', $ingreso->id_culto) == $c->id ? 'selected' : '' }}>{{ $c->nombre }}</option>

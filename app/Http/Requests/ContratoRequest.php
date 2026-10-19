@@ -15,13 +15,13 @@ class ContratoRequest extends FormRequest
     public function rules(): array
     {
         $ignorarId = $this->route('contrato');
-        $tipo = $this->input('tipo_compensacion');
 
         return [
             'id_miembro' => [
                 'required',
                 'exists:miembros,id',
-                function ($attribute, $value, $fail) use ($ignorarId) {
+                // Laravel invoca la regla como ($attribute, $value, $fail): la firma es obligatoria.
+                function ($attribute, $value, $fail) use ($ignorarId) { // NOSONAR
                     if (Contrato::tieneSolapamiento(
                         (int) $value,
                         $this->input('fecha_inicio'),
@@ -33,7 +33,7 @@ class ContratoRequest extends FormRequest
                 },
             ],
             'id_lider_iglesia' => 'required|exists:lideres_iglesia,id',
-            'tipo_compensacion' => 'required|in:' . implode(',', array_keys(Contrato::tiposCompensacion())),
+            'tipo_compensacion' => 'required|in:'.implode(',', array_keys(Contrato::tiposCompensacion())),
             'salario' => [
                 'required_if:tipo_compensacion,Salario,Bono',
                 'nullable',

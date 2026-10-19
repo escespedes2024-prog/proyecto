@@ -37,13 +37,13 @@
     </div>
 
     <div class="form-group">
-        <label class="form-label">Tema</label>
+        <label class="form-label" for="f_Tema">Tema</label><div id="f_Tema" style="color: var(--text-primary);">
         <div style="padding: 12px 14px; background: rgba(255,255,255,.04); border: 1px solid var(--card-border); border-radius: 10px;">{{ $sesion->tema }}</div>
     </div>
 
     @if($sesion->observacion)
     <div class="form-group">
-        <label class="form-label">Observación</label>
+        <label class="form-label" for="f_Observación">Observación</label><div id="f_Observación" style="color: var(--text-primary);">
         <div style="padding: 12px 14px; background: rgba(255,255,255,.04); border: 1px solid var(--card-border); border-radius: 10px;">{{ $sesion->observacion }}</div>
     </div>
     @endif

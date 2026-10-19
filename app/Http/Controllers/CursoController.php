@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Curso;
-use App\Models\Miembro;
-use App\Models\Inscripcion;
 use App\Http\Requests\CursoRequest;
-use Illuminate\Http\Request;
+use App\Models\Curso;
+use App\Models\Inscripcion;
 
 class CursoController extends Controller
 {
     public function index()
     {
         $cursos = Curso::paginate(10);
+
         return view('cursos.index', compact('cursos'));
     }
 
@@ -26,6 +25,7 @@ class CursoController extends Controller
         $data = $request->validated();
         $data['dias_semana'] = $data['dias_semana'] ?? [];
         Curso::create($data);
+
         return redirect()->route('cursos.index')->with('success', 'Curso creado con éxito.');
     }
 
@@ -47,6 +47,7 @@ class CursoController extends Controller
     public function edit($id)
     {
         $curso = Curso::withTrashed()->findOrFail($id);
+
         return view('cursos.edit', compact('curso'));
     }
 
@@ -56,6 +57,7 @@ class CursoController extends Controller
         $data = $request->validated();
         $data['dias_semana'] = $data['dias_semana'] ?? [];
         $curso->update($data);
+
         return redirect()->route('cursos.index')->with('success', 'Curso actualizado con éxito.');
     }
 
@@ -63,6 +65,7 @@ class CursoController extends Controller
     {
         $curso = Curso::findOrFail($id);
         $curso->delete();
+
         return redirect()->route('cursos.index')->with('success', 'Curso eliminado lógicamente.');
     }
 
@@ -70,6 +73,7 @@ class CursoController extends Controller
     {
         $curso = Curso::withTrashed()->findOrFail($id);
         $curso->restore();
+
         return redirect()->route('cursos.index')->with('success', 'Curso restaurado con éxito.');
     }
 }

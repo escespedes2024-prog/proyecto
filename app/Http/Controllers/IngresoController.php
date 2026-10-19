@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ingreso;
-use App\Models\Egreso;
+use App\Http\Requests\IngresoRequest;
 use App\Models\Actividad;
 use App\Models\Culto;
-use App\Http\Requests\IngresoRequest;
-use Illuminate\Http\Request;
+use App\Models\Egreso;
+use App\Models\Ingreso;
 
 class IngresoController extends Controller
 {
@@ -28,18 +27,21 @@ class IngresoController extends Controller
     {
         $actividades = Actividad::all();
         $cultos = Culto::all();
+
         return view('ingresos.create', compact('actividades', 'cultos'));
     }
 
     public function store(IngresoRequest $request)
     {
         Ingreso::create($request->validated());
+
         return redirect()->route('ingresos.index')->with('success', 'Ingreso registrado con éxito.');
     }
 
     public function show($id)
     {
         $ingreso = Ingreso::with(['actividad', 'culto'])->withTrashed()->findOrFail($id);
+
         return view('ingresos.show', compact('ingreso'));
     }
 
@@ -48,6 +50,7 @@ class IngresoController extends Controller
         $ingreso = Ingreso::withTrashed()->findOrFail($id);
         $actividades = Actividad::all();
         $cultos = Culto::all();
+
         return view('ingresos.edit', compact('ingreso', 'actividades', 'cultos'));
     }
 
@@ -55,6 +58,7 @@ class IngresoController extends Controller
     {
         $ingreso = Ingreso::withTrashed()->findOrFail($id);
         $ingreso->update($request->validated());
+
         return redirect()->route('ingresos.index')->with('success', 'Ingreso actualizado con éxito.');
     }
 
@@ -62,6 +66,7 @@ class IngresoController extends Controller
     {
         $ingreso = Ingreso::findOrFail($id);
         $ingreso->delete();
+
         return redirect()->route('ingresos.index')->with('success', 'Ingreso eliminado lógicamente.');
     }
 
@@ -69,6 +74,7 @@ class IngresoController extends Controller
     {
         $ingreso = Ingreso::withTrashed()->findOrFail($id);
         $ingreso->restore();
+
         return redirect()->route('ingresos.index')->with('success', 'Ingreso restaurado con éxito.');
     }
 }

@@ -62,8 +62,8 @@
     <form method="POST" action="{{ route('inscripciones.store', $curso->id) }}" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
         @csrf
         <div style="flex: 1; min-width: 250px;">
-            <label class="form-label">Miembro</label>
-            <select name="miembro_id" class="form-control" required>
+            <label for="miembro_id" class="form-label">Miembro</label>
+            <select id="miembro_id" name="miembro_id" class="form-control" required>
                 <option value="">Seleccione un miembro...</option>
                 @foreach($miembrosDisponibles as $miembro)
 
@@ -73,8 +73,8 @@
             </select>
         </div>
         <div>
-            <label class="form-label">Fecha de Inscripción</label>
-            <input type="date" name="fecha_inscripcion" class="form-control" value="{{ old('fecha_inscripcion', date('Y-m-d')) }}" required>
+            <label for="fecha_inscripcion" class="form-label">Fecha de Inscripción</label>
+            <input id="fecha_inscripcion" type="date" name="fecha_inscripcion" class="form-control" value="{{ old('fecha_inscripcion', date('Y-m-d')) }}" required>
         </div>
         <div>
             <button type="submit" class="btn" style="width: auto;">+ Inscribir</button>

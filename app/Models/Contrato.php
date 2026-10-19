@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contrato extends Model
 {
@@ -15,8 +15,11 @@ class Contrato extends Model
     protected $table = 'contratos';
 
     const TIPO_SALARIO = 'Salario';
+
     const TIPO_BONO = 'Bono';
+
     const TIPO_BENEFICIOS = 'Beneficios';
+
     const TIPO_VOLUNTARIO = 'Voluntario';
 
     public static function tiposCompensacion(): array
@@ -68,31 +71,17 @@ class Contrato extends Model
 
     public function getVigenciaAttribute(): string
     {
-        if ($this->trashed()) {
-            return 'Eliminado';
-        }
-
         $hoy = now()->startOfDay();
+        $fin = $this->fecha_fin ? Carbon::parse($this->fecha_fin) : null;
 
-        if (Carbon::parse($this->fecha_inicio)->gt($hoy)) {
-            return 'Futuro';
-        }
-
-        if (!$this->fecha_fin) {
-            return 'Vigente';
-        }
-
-        $fin = Carbon::parse($this->fecha_fin);
-
-        if ($fin->lt($hoy)) {
-            return 'Vencido';
-        }
-
-        if ($fin->lte($hoy->copy()->addDays(30))) {
-            return 'Por vencer';
-        }
-
-        return 'Vigente';
+        return match (true) {
+            $this->trashed() => 'Eliminado',
+            Carbon::parse($this->fecha_inicio)->gt($hoy) => 'Futuro',
+            $fin === null => 'Vigente',
+            $fin->lt($hoy) => 'Vencido',
+            $fin->lte($hoy->copy()->addDays(30)) => 'Por vencer',
+            default => 'Vigente',
+        };
     }
 
     public function getVigenteAttribute(): bool
@@ -106,7 +95,7 @@ class Contrato extends Model
             ->where('fecha_inicio', '<=', $fechaFin ?? '9999-12-31')
             ->where(function ($q) use ($fechaInicio) {
                 $q->whereNull('fecha_fin')
-                  ->orWhere('fecha_fin', '>=', $fechaInicio);
+                    ->orWhere('fecha_fin', '>=', $fechaInicio);
             });
 
         if ($ignorarId) {

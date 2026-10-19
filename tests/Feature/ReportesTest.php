@@ -45,17 +45,23 @@ class ReportesTest extends TestCase
         ], $attributes));
     }
 
+    private const ROUTE_REPORTES_MIEMBROS = '/reportes/miembros';
+
+    private const TEXT_NOMBRE_A = 'Ana Activa Test';
+
+    private const TEXT_NOMBRE_B = 'Beto Inactivo Test';
+
     public function test_guest_no_accede_a_reportes(): void
     {
-        $this->get('/reportes/miembros')->assertRedirect('/login');
+        $this->get(self::ROUTE_REPORTES_MIEMBROS)->assertRedirect('/login');
     }
 
     public function test_reporte_miembros_renderiza_documento_y_totales(): void
     {
-        $this->miembro(['nombre' => 'Ana Activa Test', 'estado' => 'Activo']);
-        $this->miembro(['nombre' => 'Beto Inactivo Test', 'estado' => 'Inactivo']);
+        $this->miembro(['nombre' => self::TEXT_NOMBRE_A, 'estado' => 'Activo']);
+        $this->miembro(['nombre' => self::TEXT_NOMBRE_B, 'estado' => 'Inactivo']);
 
-        $response = $this->actingAs($this->admin)->get('/reportes/miembros');
+        $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
         // Documento imprimible presente con encabezado y estructura.
@@ -70,14 +76,14 @@ class ReportesTest extends TestCase
 
     public function test_filtro_estado_actualiza_tabla_y_estadisticas(): void
     {
-        $this->miembro(['nombre' => 'Ana Activa Test', 'estado' => 'Activo']);
-        $this->miembro(['nombre' => 'Beto Inactivo Test', 'estado' => 'Inactivo']);
+        $this->miembro(['nombre' => self::TEXT_NOMBRE_A, 'estado' => 'Activo']);
+        $this->miembro(['nombre' => self::TEXT_NOMBRE_B, 'estado' => 'Inactivo']);
 
-        $response = $this->actingAs($this->admin)->get('/reportes/miembros?estado=Activo');
+        $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS.'?estado=Activo');
 
         $response->assertOk();
-        $response->assertSee('Ana Activa Test');
-        $response->assertDontSee('Beto Inactivo Test');
+        $response->assertSee(self::TEXT_NOMBRE_A);
+        $response->assertDontSee(self::TEXT_NOMBRE_B);
         // El estado filtrado se refleja en los metadatos del encabezado.
         $response->assertSee('Estado');
     }
@@ -88,7 +94,7 @@ class ReportesTest extends TestCase
         $this->miembro(['nombre' => 'Fuera Rango Test', 'fecha_ingreso' => '2022-01-01']);
 
         $response = $this->actingAs($this->admin)
-            ->get('/reportes/miembros?desde=2024-01-01&hasta=2024-12-31');
+            ->get(self::ROUTE_REPORTES_MIEMBROS.'?desde=2024-01-01&hasta=2024-12-31');
 
         $response->assertOk();
         $response->assertSee('Dentro Rango Test');
@@ -117,7 +123,7 @@ class ReportesTest extends TestCase
 
     public function test_panel_de_control_conserva_filtros(): void
     {
-        $response = $this->actingAs($this->admin)->get('/reportes/miembros');
+        $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
         $response->assertSee('report-panel', false);
@@ -138,7 +144,7 @@ class ReportesTest extends TestCase
 
         // En pantalla la tabla se envuelve para que su scroll no desborde la hoja.
         $this->actingAs($this->admin)
-            ->get('/reportes/miembros')
+            ->get(self::ROUTE_REPORTES_MIEMBROS)
             ->assertOk()
             ->assertSee('report-table-scroll', false);
 

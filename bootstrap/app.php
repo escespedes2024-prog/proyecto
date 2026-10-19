@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Middleware\CheckPermiso;
+use App\Http\Middleware\PreventBackHistory;
+use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\SecureHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,17 +17,17 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
-            'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
-            'permiso' => \App\Http\Middleware\CheckPermiso::class,
+            'role' => RoleMiddleware::class,
+            'prevent-back-history' => PreventBackHistory::class,
+            'permiso' => CheckPermiso::class,
         ]);
 
         // Global: se aplica a TODAS las respuestas, incluidas 404 y errores
         // (las cabeceras de rutas web no cubren respuestas sin ruta coincidente).
-        $middleware->prepend(\App\Http\Middleware\SecureHeaders::class);
+        $middleware->prepend(SecureHeaders::class);
 
         $middleware->web(append: [
-            \App\Http\Middleware\CheckPermiso::class,
+            CheckPermiso::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

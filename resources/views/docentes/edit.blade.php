@@ -21,8 +21,8 @@
         @method('PUT')
 
         <div class="form-group">
-            <label class="form-label">Miembro</label>
-            <select name="id_miembro" class="form-control" required>
+            <label for="id_miembro" class="form-label">Miembro</label>
+            <select id="id_miembro" name="id_miembro" class="form-control" required>
                 <option value="">Seleccione un miembro...</option>
                 @foreach($miembros as $m)
                     <option value="{{ $m->id }}" {{ old('id_miembro', $docente->id_miembro) == $m->id ? 'selected' : '' }}>{{ $m->nombre }}</option>
@@ -31,13 +31,13 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Especialidad</label>
-            <input type="text" name="especialidad" class="form-control" value="{{ old('especialidad', $docente->especialidad) }}" required>
+            <label for="especialidad" class="form-label">Especialidad</label>
+            <input id="especialidad" type="text" name="especialidad" class="form-control" value="{{ old('especialidad', $docente->especialidad) }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Título</label>
-            <input type="text" name="titulo" class="form-control" value="{{ old('titulo', $docente->titulo) }}">
+            <label for="titulo" class="form-label">Título</label>
+            <input id="titulo" type="text" name="titulo" class="form-control" value="{{ old('titulo', $docente->titulo) }}">
         </div>
 
         <div class="form-group">

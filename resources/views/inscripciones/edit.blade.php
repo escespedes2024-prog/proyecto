@@ -29,13 +29,13 @@
         @method('PUT')
 
         <div class="form-group">
-            <label class="form-label">Fecha de Inscripción</label>
-            <input type="date" name="fecha_inscripcion" class="form-control" value="{{ old('fecha_inscripcion', $inscripcion->fecha_inscripcion ? \Carbon\Carbon::parse($inscripcion->fecha_inscripcion)->format('Y-m-d') : '') }}" required>
+            <label for="fecha_inscripcion" class="form-label">Fecha de Inscripción</label>
+            <input id="fecha_inscripcion" type="date" name="fecha_inscripcion" class="form-control" value="{{ old('fecha_inscripcion', $inscripcion->fecha_inscripcion ? \Carbon\Carbon::parse($inscripcion->fecha_inscripcion)->format('Y-m-d') : '') }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Estado</label>
-            <select name="estado" class="form-control" required>
+            <label for="estado" class="form-label">Estado</label>
+            <select id="estado" name="estado" class="form-control" required>
                 <option value="Activo" {{ old('estado', $inscripcion->estado) == 'Activo' ? 'selected' : '' }}>Activo</option>
                 <option value="Retirado" {{ old('estado', $inscripcion->estado) == 'Retirado' ? 'selected' : '' }}>Retirado</option>
                 <option value="Completado" {{ old('estado', $inscripcion->estado) == 'Completado' ? 'selected' : '' }}>Completado</option>

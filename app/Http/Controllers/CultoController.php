@@ -11,12 +11,14 @@ class CultoController extends Controller
     public function index()
     {
         $cultos = Culto::with('liderIglesia')->paginate(10);
+
         return view('cultos.index', compact('cultos'));
     }
 
     public function create()
     {
         $lideres = LiderIglesia::all();
+
         return view('cultos.create', compact('lideres'));
     }
 
@@ -31,12 +33,14 @@ class CultoController extends Controller
         ]);
 
         Culto::create($validated);
+
         return redirect()->route('cultos.index')->with('success', 'Culto registrado con éxito.');
     }
 
     public function show($id)
     {
         $culto = Culto::with(['liderIglesia', 'ingresos'])->withTrashed()->findOrFail($id);
+
         return view('cultos.show', compact('culto'));
     }
 
@@ -44,6 +48,7 @@ class CultoController extends Controller
     {
         $culto = Culto::withTrashed()->findOrFail($id);
         $lideres = LiderIglesia::all();
+
         return view('cultos.edit', compact('culto', 'lideres'));
     }
 
@@ -60,6 +65,7 @@ class CultoController extends Controller
         ]);
 
         $culto->update($validated);
+
         return redirect()->route('cultos.index')->with('success', 'Culto actualizado con éxito.');
     }
 
@@ -67,6 +73,7 @@ class CultoController extends Controller
     {
         $culto = Culto::findOrFail($id);
         $culto->delete();
+
         return redirect()->route('cultos.index')->with('success', 'Culto eliminado lógicamente.');
     }
 
@@ -74,6 +81,7 @@ class CultoController extends Controller
     {
         $culto = Culto::withTrashed()->findOrFail($id);
         $culto->restore();
+
         return redirect()->route('cultos.index')->with('success', 'Culto restaurado con éxito.');
     }
 }

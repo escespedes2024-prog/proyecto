@@ -17,46 +17,46 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div class="form-group">
-            <label class="form-label">Nombre Completo</label>
+            <label class="form-label" for="f_Nombre Completo">Nombre Completo</label>
             <div style="color: var(--text-primary);">{{ $miembro->nombre }}</div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Correo Electrónico</label>
+            <label class="form-label" for="f_Correo Electrónico">Correo Electrónico</label>
             <div style="color: var(--text-primary);">{{ $miembro->email ?? 'N/A' }}</div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Teléfono</label>
+            <label class="form-label" for="f_Teléfono">Teléfono</label>
             <div style="color: var(--text-primary);">{{ $miembro->telefono ?? 'N/A' }}</div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Dirección</label>
+            <label class="form-label" for="f_Dirección">Dirección</label>
             <div style="color: var(--text-primary);">{{ $miembro->direccion ?? 'N/A' }}</div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Fecha de Nacimiento</label>
+            <label class="form-label" for="f_Fecha de Nacimiento">Fecha de Nacimiento</label>
             <div style="color: var(--text-primary);">
                 {{ $miembro->f_nacimiento ? \Carbon\Carbon::parse($miembro->f_nacimiento)->format('d/m/Y') : 'N/A' }}
             </div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Sexo</label>
+            <label class="form-label" for="f_Sexo">Sexo</label>
             <div style="color: var(--text-primary);">{{ $miembro->sexo ?? 'N/A' }}</div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Fecha de Ingreso</label>
+            <label class="form-label" for="f_Fecha de Ingreso">Fecha de Ingreso</label>
             <div style="color: var(--text-primary);">
                 {{ $miembro->fecha_ingreso ? \Carbon\Carbon::parse($miembro->fecha_ingreso)->format('d/m/Y') : 'N/A' }}
             </div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Estado</label>
+            <label class="form-label" for="f_Estado">Estado</label>
             <div style="color: var(--text-primary);">{{ $miembro->estado }}</div>
         </div>
     </div>

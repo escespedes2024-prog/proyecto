@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
@@ -24,7 +22,7 @@ return new class extends Migration
 
         foreach ($roles as $rol) {
             $existe = DB::table('roles')->where('nombre', $rol['nombre'])->exists();
-            if (!$existe) {
+            if (! $existe) {
                 DB::table('roles')->insert(array_merge($rol, [
                     'guard_name' => 'web',
                     'created_at' => $timestamps,

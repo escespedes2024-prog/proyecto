@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contrato;
-use App\Models\Miembro;
-use App\Models\LiderIglesia;
-use App\Models\Egreso;
-use Carbon\Carbon;
 use App\Http\Requests\ContratoRequest;
+use App\Models\Contrato;
+use App\Models\Egreso;
+use App\Models\LiderIglesia;
+use App\Models\Miembro;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ContratoController extends Controller
@@ -22,7 +22,7 @@ class ContratoController extends Controller
             ELSE 'vigente' END";
 
         $contratos = Contrato::with(['miembro', 'lider.cargo'])
-            ->when($request->filled('q'), fn ($q) => $q->whereHas('miembro', fn ($m) => $m->where('nombre', 'like', '%' . $request->q . '%')))
+            ->when($request->filled('q'), fn ($q) => $q->whereHas('miembro', fn ($m) => $m->where('nombre', 'like', '%'.$request->q.'%')))
             ->when($request->filled('tipo_compensacion'), fn ($q) => $q->where('tipo_compensacion', $request->tipo_compensacion))
             ->when($request->filled('estado'), fn ($q) => $q->whereRaw("$expresionVigencia = ?", [$request->estado]))
             ->orderByDesc('fecha_inicio')
@@ -37,12 +37,14 @@ class ContratoController extends Controller
         $miembros = Miembro::where('estado', 'Activo')->orderBy('nombre')->get();
         $lideres = LiderIglesia::where('activo', true)->with('cargo')->orderBy('nombre')->get();
         $tiposCompensacion = Contrato::tiposCompensacion();
+
         return view('contratos.create', compact('miembros', 'lideres', 'tiposCompensacion'));
     }
 
     public function store(ContratoRequest $request)
     {
         Contrato::create($request->validated());
+
         return redirect()->route('contratos.index')->with('success', 'Contrato creado con éxito.');
     }
 
@@ -50,6 +52,7 @@ class ContratoController extends Controller
     {
         $contrato = Contrato::with(['miembro', 'lider.cargo', 'egresos' => fn ($q) => $q->withTrashed()])->withTrashed()->findOrFail($id);
         $totalPagado = (float) Egreso::where('id_contrato', $contrato->id)->sum('monto');
+
         return view('contratos.show', compact('contrato', 'totalPagado'));
     }
 
@@ -59,6 +62,7 @@ class ContratoController extends Controller
         $miembros = Miembro::where('estado', 'Activo')->orderBy('nombre')->get();
         $lideres = LiderIglesia::where('activo', true)->with('cargo')->orderBy('nombre')->get();
         $tiposCompensacion = Contrato::tiposCompensacion();
+
         return view('contratos.edit', compact('contrato', 'miembros', 'lideres', 'tiposCompensacion'));
     }
 
@@ -66,6 +70,7 @@ class ContratoController extends Controller
     {
         $contrato = Contrato::withTrashed()->findOrFail($id);
         $contrato->update($request->validated());
+
         return redirect()->route('contratos.index')->with('success', 'Contrato actualizado con éxito.');
     }
 
@@ -73,6 +78,7 @@ class ContratoController extends Controller
     {
         $contrato = Contrato::findOrFail($id);
         $contrato->delete();
+
         return redirect()->route('contratos.index')->with('success', 'Contrato eliminado lógicamente.');
     }
 
@@ -80,6 +86,7 @@ class ContratoController extends Controller
     {
         $contrato = Contrato::withTrashed()->findOrFail($id);
         $contrato->restore();
+
         return redirect()->route('contratos.index')->with('success', 'Contrato restaurado con éxito.');
     }
 
@@ -87,7 +94,7 @@ class ContratoController extends Controller
     {
         $contrato = Contrato::withTrashed()->findOrFail($id);
 
-        if (!$contrato->vigente) {
+        if (! $contrato->vigente) {
             $nuevoInicio = now()->toDateString();
         } else {
             $nuevoInicio = Carbon::parse($contrato->fecha_fin ?? now())->addDay()->toDateString();

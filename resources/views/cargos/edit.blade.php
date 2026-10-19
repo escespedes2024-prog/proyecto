@@ -21,18 +21,18 @@
         @method('PUT')
 
         <div class="form-group">
-            <label class="form-label">Nombre del Cargo</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $cargo->nombre) }}" required>
+            <label for="nombre" class="form-label">Nombre del Cargo</label>
+            <input type="text" name="nombre" id="nombre" class="form-control" value="{{ old('nombre', $cargo->nombre) }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Nivel Jerárquico</label>
-            <input type="number" name="nivel_jerarquico" class="form-control" value="{{ old('nivel_jerarquico', $cargo->nivel_jerarquico) }}" min="1" required>
+            <label for="nivel_jerarquico" class="form-label">Nivel Jerárquico</label>
+            <input id="nivel_jerarquico" type="number" name="nivel_jerarquico" class="form-control" value="{{ old('nivel_jerarquico', $cargo->nivel_jerarquico) }}" min="1" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Descripción</label>
-            <textarea name="descripcion" class="form-control" rows="3">{{ old('descripcion', $cargo->descripcion) }}</textarea>
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea id="descripcion" name="descripcion" class="form-control" rows="3">{{ old('descripcion', $cargo->descripcion) }}</textarea>
         </div>
 
         <div style="display: flex; gap: 15px; margin-top: 30px;">

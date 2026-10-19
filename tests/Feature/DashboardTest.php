@@ -11,6 +11,8 @@ class DashboardTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const TEXT_VER_TODAS = 'Ver todas';
+
     /**
      * Crea un usuario con el rol indicado para comprobar la visibilidad de accesos.
      */
@@ -133,7 +135,7 @@ class DashboardTest extends TestCase
             ->assertSee(route('miembros.create'), false)
             ->assertSee(route('ingresos.create'), false)
             ->assertSee(route('contratos.create'), false)
-            ->assertSee('Ver todas');
+            ->assertSee(self::TEXT_VER_TODAS);
     }
 
     public function test_el_secretario_no_ve_accesos_de_finanzas(): void
@@ -143,7 +145,7 @@ class DashboardTest extends TestCase
         $this->actingAs($user)
             ->view('dashboard', $this->datosDashboard())
             ->assertSee(route('miembros.create'), false)
-            ->assertSee('Ver todas')
+            ->assertSee(self::TEXT_VER_TODAS)
             ->assertDontSee(route('ingresos.create'), false)
             ->assertDontSee(route('contratos.create'), false);
     }
@@ -157,6 +159,6 @@ class DashboardTest extends TestCase
             ->assertSee(route('ingresos.create'), false)
             ->assertDontSee(route('miembros.create'), false)
             ->assertDontSee(route('cursos.create'), false)
-            ->assertDontSee('Ver todas');
+            ->assertDontSee(self::TEXT_VER_TODAS);
     }
 }

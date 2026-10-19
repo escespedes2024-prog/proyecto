@@ -22,13 +22,13 @@
         @csrf
 
         <div class="form-group">
-            <label class="form-label">Nombre de la Actividad</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
+            <label for="nombre" class="form-label">Nombre de la Actividad</label>
+            <input type="text" name="nombre" id="nombre" class="form-control" value="{{ old('nombre') }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Ministerio</label>
-            <select name="id_ministerio" class="form-control" required>
+            <label for="id_ministerio" class="form-label">Ministerio</label>
+            <select id="id_ministerio" name="id_ministerio" class="form-control" required>
                 <option value="">Seleccione un ministerio...</option>
                 @foreach($ministerios as $min)
 
@@ -39,18 +39,18 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Fecha</label>
-            <input type="date" name="fecha" class="form-control" value="{{ old('fecha', date('Y-m-d')) }}" required>
+            <label for="fecha" class="form-label">Fecha</label>
+            <input id="fecha" type="date" name="fecha" class="form-control" value="{{ old('fecha', date('Y-m-d')) }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Lugar</label>
-            <input type="text" name="lugar" class="form-control" value="{{ old('lugar') }}">
+            <label for="lugar" class="form-label">Lugar</label>
+            <input id="lugar" type="text" name="lugar" class="form-control" value="{{ old('lugar') }}">
         </div>
 
         <div class="form-group">
-            <label class="form-label">Estado</label>
-            <select name="estado" class="form-control" required>
+            <label for="estado" class="form-label">Estado</label>
+            <select name="estado" id="estado" class="form-control" required>
                 <option value="Programado" {{ old('estado', 'Programado') == 'Programado' ? 'selected' : '' }}>Programado</option>
                 <option value="En Progreso" {{ old('estado') == 'En Progreso' ? 'selected' : '' }}>En Progreso</option>
                 <option value="Completado" {{ old('estado') == 'Completado' ? 'selected' : '' }}>Completado</option>
@@ -59,8 +59,8 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Descripción</label>
-            <textarea name="descripcion" class="form-control" rows="3">{{ old('descripcion') }}</textarea>
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea name="descripcion" id="descripcion" class="form-control" rows="3">{{ old('descripcion') }}</textarea>
         </div>
 
         <div style="display: flex; gap: 15px; margin-top: 30px;">

@@ -10,6 +10,7 @@ class PermisoController extends Controller
     public function index()
     {
         $roles = Role::withCount('permisos')->orderBy('nombre')->paginate(10);
+
         return view('permisos.index', compact('roles'));
     }
 
@@ -42,16 +43,16 @@ class PermisoController extends Controller
             $role->permisos()->updateOrCreate(
                 ['modulo' => $modulo],
                 [
-                    'ver' => !empty($valores['ver']),
-                    'crear' => !empty($valores['crear']),
-                    'editar' => !empty($valores['editar']),
-                    'eliminar' => !empty($valores['eliminar']),
-                    'buscar' => !empty($valores['buscar']),
+                    'ver' => ! empty($valores['ver']),
+                    'crear' => ! empty($valores['crear']),
+                    'editar' => ! empty($valores['editar']),
+                    'eliminar' => ! empty($valores['eliminar']),
+                    'buscar' => ! empty($valores['buscar']),
                 ]
             );
         }
 
         return redirect()->route('permisos.edit', $role->id)
-            ->with('success', 'Permisos actualizados para el rol ' . $role->nombre . '.');
+            ->with('success', 'Permisos actualizados para el rol '.$role->nombre.'.');
     }
 }

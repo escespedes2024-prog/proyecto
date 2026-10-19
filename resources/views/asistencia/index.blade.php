@@ -8,13 +8,13 @@
     <form method="GET" action="{{ route('asistencia.index') }}" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
         @if(auth()->user()->puede('asistencia', 'buscar'))
         <div>
-            <label class="form-label">Miembro</label>
-            <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Buscar por nombre...">
+            <label for="q" class="form-label">Miembro</label>
+            <input id="q" type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Buscar por nombre...">
         </div>
         @endif
         <div>
-            <label class="form-label">Curso</label>
-            <select name="curso_id" class="form-control" style="min-width: 180px;">
+            <label for="curso_id" class="form-label">Curso</label>
+            <select id="curso_id" name="curso_id" class="form-control" style="min-width: 180px;">
                 <option value="">Todos los cursos</option>
                 @foreach($cursos as $curso)
 
@@ -24,8 +24,8 @@
             </select>
         </div>
         <div>
-            <label class="form-label">Estado</label>
-            <select name="estado" class="form-control">
+            <label for="estado" class="form-label">Estado</label>
+            <select id="estado" name="estado" class="form-control">
                 <option value="">Todos</option>
                 @foreach(['Presente', 'Ausente', 'Tardanza', 'Justificado'] as $estado)
 
@@ -35,12 +35,12 @@
             </select>
         </div>
         <div>
-            <label class="form-label">Desde</label>
-            <input type="date" name="desde" class="form-control" value="{{ request('desde') }}">
+            <label for="desde" class="form-label">Desde</label>
+            <input id="desde" type="date" name="desde" class="form-control" value="{{ request('desde') }}">
         </div>
         <div>
-            <label class="form-label">Hasta</label>
-            <input type="date" name="hasta" class="form-control" value="{{ request('hasta') }}">
+            <label for="hasta" class="form-label">Hasta</label>
+            <input id="hasta" type="date" name="hasta" class="form-control" value="{{ request('hasta') }}">
         </div>
         <div>
             <button type="submit" class="btn" style="width: auto;">Filtrar</button>

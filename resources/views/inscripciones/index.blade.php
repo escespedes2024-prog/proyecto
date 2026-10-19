@@ -8,21 +8,21 @@
     <form method="GET" action="{{ route('inscripciones.index') }}" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
         @if(auth()->user()->puede('inscripciones', 'buscar'))
         <div style="flex: 1; min-width: 250px;">
-            <label class="form-label">Nombre del curso</label>
-            <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Buscar por nombre...">
+            <label for="q" class="form-label">Nombre del curso</label>
+            <input id="q" type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Buscar por nombre...">
         </div>
         @endif
         <div>
-            <label class="form-label">Pago</label>
-            <select name="tipo" class="form-control" style="min-width: 160px;">
+            <label for="tipo" class="form-label">Pago</label>
+            <select id="tipo" name="tipo" class="form-control" style="min-width: 160px;">
                 <option value="">Todos</option>
                 <option value="con_pago" {{ request('tipo') == 'con_pago' ? 'selected' : '' }}>Con costo</option>
                 <option value="gratuito" {{ request('tipo') == 'gratuito' ? 'selected' : '' }}>Gratuito</option>
             </select>
         </div>
         <div>
-            <label class="form-label">Cupo</label>
-            <select name="cupo" class="form-control" style="min-width: 160px;">
+            <label for="cupo" class="form-label">Cupo</label>
+            <select id="cupo" name="cupo" class="form-control" style="min-width: 160px;">
                 <option value="">Todos</option>
                 <option value="disponible" {{ request('cupo') == 'disponible' ? 'selected' : '' }}>Con cupo disponible</option>
                 <option value="lleno" {{ request('cupo') == 'lleno' ? 'selected' : '' }}>Cupo lleno</option>

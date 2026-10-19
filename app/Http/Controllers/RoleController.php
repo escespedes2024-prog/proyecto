@@ -11,6 +11,7 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::paginate(10);
+
         return view('roles.index', compact('roles'));
     }
 
@@ -34,12 +35,14 @@ class RoleController extends Controller
         }
 
         Role::create($validated);
+
         return redirect()->route('roles.index')->with('success', 'Rol creado con éxito.');
     }
 
     public function edit($id)
     {
         $role = Role::withTrashed()->findOrFail($id);
+
         return view('roles.edit', compact('role'));
     }
 
@@ -48,7 +51,7 @@ class RoleController extends Controller
         $role = Role::withTrashed()->findOrFail($id);
 
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:roles,nombre,' . $role->id,
+            'nombre' => 'required|string|max:255|unique:roles,nombre,'.$role->id,
             'descripcion' => 'nullable|string|max:500',
             'estado' => 'required|string|in:Activo,Inactivo',
             'nivel_acceso' => 'required|integer|min:1',
@@ -60,6 +63,7 @@ class RoleController extends Controller
         }
 
         $role->update($validated);
+
         return redirect()->route('roles.index')->with('success', 'Rol actualizado con éxito.');
     }
 
@@ -67,6 +71,7 @@ class RoleController extends Controller
     {
         $role = Role::findOrFail($id);
         $role->delete();
+
         return redirect()->route('roles.index')->with('success', 'Rol eliminado lógicamente.');
     }
 
@@ -74,6 +79,7 @@ class RoleController extends Controller
     {
         $role = Role::withTrashed()->findOrFail($id);
         $role->restore();
+
         return redirect()->route('roles.index')->with('success', 'Rol restaurado con éxito.');
     }
 
@@ -82,6 +88,7 @@ class RoleController extends Controller
     {
         $users = User::with('roles')->paginate(10);
         $roles = Role::all();
+
         return view('roles.user_roles', compact('users', 'roles'));
     }
 
@@ -90,6 +97,7 @@ class RoleController extends Controller
     {
         $user = User::with('roles')->findOrFail($userId);
         $roles = Role::all();
+
         return view('roles.user_roles_edit', compact('user', 'roles'));
     }
 
@@ -112,6 +120,7 @@ class RoleController extends Controller
     {
         $user = User::findOrFail($userId);
         $user->roles()->detach();
+
         return redirect()->route('roles.user')->with('success', 'Relación rol-usuario eliminada con éxito.');
     }
 }

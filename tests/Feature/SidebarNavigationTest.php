@@ -13,6 +13,8 @@ class SidebarNavigationTest extends TestCase
 
     private User $admin;
 
+    private const ROUTE_REPORTES_MIEMBROS = '/reportes/miembros';
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -37,7 +39,7 @@ class SidebarNavigationTest extends TestCase
     {
         // Se usa una ruta que renderiza el layout y funciona sobre SQLite
         // (el dashboard usa DATE_FORMAT(), específico de MySQL).
-        $response = $this->actingAs($this->admin)->get('/reportes/miembros');
+        $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
         $response->assertSee('id="app-sidebar"', false);
@@ -49,7 +51,7 @@ class SidebarNavigationTest extends TestCase
 
     public function test_sidebar_conserva_todas_las_opciones_de_navegacion(): void
     {
-        $response = $this->actingAs($this->admin)->get('/reportes/miembros');
+        $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
         $response->assertSee('data-title="Principal"', false);
@@ -66,7 +68,7 @@ class SidebarNavigationTest extends TestCase
 
     public function test_sidebar_incluye_logo_compacto_y_avatar(): void
     {
-        $response = $this->actingAs($this->admin)->get('/reportes/miembros');
+        $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
         // Logo compacto para el estado contraído y avatar del usuario visible.
@@ -77,7 +79,7 @@ class SidebarNavigationTest extends TestCase
 
     public function test_submenu_de_usuario_es_flotante_y_reutiliza_el_logout(): void
     {
-        $response = $this->actingAs($this->admin)->get('/reportes/miembros');
+        $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
         $response->assertSee('id="user-menu-wrap"', false);
@@ -94,7 +96,7 @@ class SidebarNavigationTest extends TestCase
 
     public function test_submenu_de_usuario_inicia_cerrado(): void
     {
-        $response = $this->actingAs($this->admin)->get('/reportes/miembros');
+        $response = $this->actingAs($this->admin)->get(self::ROUTE_REPORTES_MIEMBROS);
 
         $response->assertOk();
         // No debe abrirse automáticamente: el contenedor no empieza con la clase open.

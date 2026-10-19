@@ -12,8 +12,16 @@ class SecuritySmokeTest extends TestCase
     use DatabaseMigrations;
 
     private User $admin;
+
     private User $secretario;
+
     private User $tesorero;
+
+    private const ROUTE_LOGIN = '/login';
+
+    private const ROUTE_CULTOS = '/cultos';
+
+    private const ROUTE_CARGOS = '/cargos';
 
     protected function setUp(): void
     {
@@ -44,7 +52,7 @@ class SecuritySmokeTest extends TestCase
 
     public function test_guest_no_accede_a_dashboard(): void
     {
-        $this->get('/dashboard')->assertRedirect('/login');
+        $this->get('/dashboard')->assertRedirect(self::ROUTE_LOGIN);
     }
 
     public function test_registro_publico_deshabilitado(): void
@@ -62,15 +70,15 @@ class SecuritySmokeTest extends TestCase
     {
         $this->actingAs($this->admin);
         $this->get('/users')->assertOk();
-        $this->get('/cultos')->assertOk();
-        $this->get('/cargos')->assertOk();
+        $this->get(self::ROUTE_CULTOS)->assertOk();
+        $this->get(self::ROUTE_CARGOS)->assertOk();
     }
 
     public function test_secretario_sin_acceso_a_admin_y_finanzas(): void
     {
         $this->actingAs($this->secretario);
-        $this->get('/cargos')->assertOk();
-        $this->get('/cultos')->assertForbidden();
+        $this->get(self::ROUTE_CARGOS)->assertOk();
+        $this->get(self::ROUTE_CULTOS)->assertForbidden();
         $this->get('/users')->assertForbidden();
         $this->get('/ingresos')->assertForbidden();
     }
@@ -78,14 +86,14 @@ class SecuritySmokeTest extends TestCase
     public function test_tesorero_sin_acceso_a_personas(): void
     {
         $this->actingAs($this->tesorero);
-        $this->get('/cultos')->assertOk();
-        $this->get('/cargos')->assertForbidden();
+        $this->get(self::ROUTE_CULTOS)->assertOk();
+        $this->get(self::ROUTE_CARGOS)->assertForbidden();
         $this->get('/miembros')->assertForbidden();
     }
 
     public function test_cabeceras_de_seguridad_presentes(): void
     {
-        $response = $this->get('/login');
+        $response = $this->get(self::ROUTE_LOGIN);
         $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
         $response->assertHeader('X-Content-Type-Options', 'nosniff');
         $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -93,7 +101,7 @@ class SecuritySmokeTest extends TestCase
 
     public function test_login_envia_mensaje_por_credenciales_incorrectas(): void
     {
-        $this->post('/login', [
+        $this->post(self::ROUTE_LOGIN, [
             'email' => 'nobody@proyecto.com',
             'password' => 'incorrecta',
         ])->assertRedirect();

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Egreso;
+use App\Http\Requests\EgresoRequest;
 use App\Models\Contrato;
+use App\Models\Egreso;
 use App\Models\Ingreso;
 use App\Models\LiderIglesia;
-use App\Http\Requests\EgresoRequest;
-use Illuminate\Http\Request;
 
 class EgresoController extends Controller
 {
@@ -41,6 +40,7 @@ class EgresoController extends Controller
         $contratos = Contrato::with('miembro')->get();
         $lideres = LiderIglesia::with('cargo')->get()->sortBy('nombre')->values();
         $saldoDisponible = $this->saldoDisponible();
+
         return view('egresos.create', compact('contratos', 'lideres', 'saldoDisponible'));
     }
 
@@ -49,17 +49,19 @@ class EgresoController extends Controller
         $saldo = $this->saldoDisponible();
 
         if ($request->monto > $saldo) {
-            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: Bs ' . number_format($saldo, 2) . '.'])
+            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: Bs '.number_format($saldo, 2).'.'])
                 ->withInput();
         }
 
         Egreso::create($request->validated());
+
         return redirect()->route('egresos.index')->with('success', 'Egreso registrado con éxito.');
     }
 
     public function show($id)
     {
         $egreso = Egreso::with('contrato')->withTrashed()->findOrFail($id);
+
         return view('egresos.show', compact('egreso'));
     }
 
@@ -69,6 +71,7 @@ class EgresoController extends Controller
         $contratos = Contrato::with('miembro')->get();
         $lideres = LiderIglesia::with('cargo')->get()->sortBy('nombre')->values();
         $saldoDisponible = $this->saldoDisponible($egreso->id);
+
         return view('egresos.edit', compact('egreso', 'contratos', 'lideres', 'saldoDisponible'));
     }
 
@@ -78,11 +81,12 @@ class EgresoController extends Controller
         $saldo = $this->saldoDisponible($egreso->id);
 
         if ($request->monto > $saldo) {
-            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: Bs ' . number_format($saldo, 2) . '.'])
+            return back()->withErrors(['monto' => 'No hay saldo suficiente. Saldo disponible: Bs '.number_format($saldo, 2).'.'])
                 ->withInput();
         }
 
         $egreso->update($request->validated());
+
         return redirect()->route('egresos.index')->with('success', 'Egreso actualizado con éxito.');
     }
 
@@ -90,6 +94,7 @@ class EgresoController extends Controller
     {
         $egreso = Egreso::findOrFail($id);
         $egreso->delete();
+
         return redirect()->route('egresos.index')->with('success', 'Egreso eliminado lógicamente.');
     }
 
@@ -97,6 +102,7 @@ class EgresoController extends Controller
     {
         $egreso = Egreso::withTrashed()->findOrFail($id);
         $egreso->restore();
+
         return redirect()->route('egresos.index')->with('success', 'Egreso restaurado con éxito.');
     }
 }

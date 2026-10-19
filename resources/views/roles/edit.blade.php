@@ -23,24 +23,24 @@
         @method('PUT')
 
         <div class="form-group">
-            <label class="form-label">Nombre del Rol *</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $role->nombre) }}" required>
+            <label for="nombre" class="form-label">Nombre del Rol *</label>
+            <input id="nombre" type="text" name="nombre" class="form-control" value="{{ old('nombre', $role->nombre) }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Descripción</label>
-            <textarea name="descripcion" class="form-control" rows="3">{{ old('descripcion', $role->descripcion) }}</textarea>
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea id="descripcion" name="descripcion" class="form-control" rows="3">{{ old('descripcion', $role->descripcion) }}</textarea>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label class="form-label">Nivel de Acceso *</label>
-                <input type="number" name="nivel_acceso" class="form-control" value="{{ old('nivel_acceso', $role->nivel_acceso) }}" min="1" required>
+                <label for="nivel_acceso" class="form-label">Nivel de Acceso *</label>
+                <input id="nivel_acceso" type="number" name="nivel_acceso" class="form-control" value="{{ old('nivel_acceso', $role->nivel_acceso) }}" min="1" required>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Estado *</label>
-                <select name="estado" class="form-control" required>
+                <label for="estado" class="form-label">Estado *</label>
+                <select id="estado" name="estado" class="form-control" required>
                     <option value="Activo" {{ old('estado', $role->estado) == 'Activo' ? 'selected' : '' }}>Activo</option>
                     <option value="Inactivo" {{ old('estado', $role->estado) == 'Inactivo' ? 'selected' : '' }}>Inactivo</option>
                 </select>
@@ -48,8 +48,8 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Guard Name</label>
-            <input type="text" name="guard_name" class="form-control" value="{{ old('guard_name', $role->guard_name) }}" placeholder="web">
+            <label for="guard_name" class="form-label">Guard Name</label>
+            <input id="guard_name" type="text" name="guard_name" class="form-control" value="{{ old('guard_name', $role->guard_name) }}" placeholder="web">
         </div>
 
         <div style="display: flex; gap: 15px; margin-top: 30px;">

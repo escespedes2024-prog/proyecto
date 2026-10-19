@@ -1,29 +1,29 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ActividadController;
+use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CargoController;
+use App\Http\Controllers\ContratoController;
+use App\Http\Controllers\CultoController;
+use App\Http\Controllers\CursoController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\EgresoController;
+use App\Http\Controllers\IngresoController;
+use App\Http\Controllers\InscripcionController;
 use App\Http\Controllers\LiderIglesiaController;
 use App\Http\Controllers\MiembroController;
 use App\Http\Controllers\MinisterioController;
-use App\Http\Controllers\ActividadController;
-use App\Http\Controllers\SeguimientoActividadController;
-use App\Http\Controllers\CursoController;
-use App\Http\Controllers\DocenteController;
-use App\Http\Controllers\SesionController;
-use App\Http\Controllers\CultoController;
-use App\Http\Controllers\IngresoController;
-use App\Http\Controllers\EgresoController;
-use App\Http\Controllers\ContratoController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\PermisoController;
 use App\Http\Controllers\PagoCursoController;
-use App\Http\Controllers\InscripcionController;
-use App\Http\Controllers\AsistenciaController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PermisoController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SeguimientoActividadController;
+use App\Http\Controllers\SesionController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 // Ruta de inicio muestra la bienvenida; si ya está autenticado va al dashboard
 Route::get('/', function () {

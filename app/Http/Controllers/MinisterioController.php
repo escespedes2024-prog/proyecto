@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ministerio;
-use App\Models\Miembro;
-use App\Models\LiderIglesia;
 use App\Http\Requests\MinisterioRequest;
-use Illuminate\Http\Request;
+use App\Models\LiderIglesia;
+use App\Models\Miembro;
+use App\Models\Ministerio;
 
 class MinisterioController extends Controller
 {
     public function index()
     {
         $ministerios = Ministerio::with('liderable')->paginate(10);
+
         return view('ministerios.index', compact('ministerios'));
     }
 
@@ -20,18 +20,21 @@ class MinisterioController extends Controller
     {
         $miembros = Miembro::all();
         $lideres = LiderIglesia::all();
+
         return view('ministerios.create', compact('miembros', 'lideres'));
     }
 
     public function store(MinisterioRequest $request)
     {
         Ministerio::create($request->validated());
+
         return redirect()->route('ministerios.index')->with('success', 'Ministerio creado con éxito.');
     }
 
     public function show($id)
     {
         $ministerio = Ministerio::with(['liderable', 'miembros'])->withTrashed()->findOrFail($id);
+
         return view('ministerios.show', compact('ministerio'));
     }
 
@@ -40,6 +43,7 @@ class MinisterioController extends Controller
         $ministerio = Ministerio::withTrashed()->findOrFail($id);
         $miembros = Miembro::all();
         $lideres = LiderIglesia::all();
+
         return view('ministerios.edit', compact('ministerio', 'miembros', 'lideres'));
     }
 
@@ -47,6 +51,7 @@ class MinisterioController extends Controller
     {
         $ministerio = Ministerio::withTrashed()->findOrFail($id);
         $ministerio->update($request->validated());
+
         return redirect()->route('ministerios.index')->with('success', 'Ministerio actualizado con éxito.');
     }
 
@@ -54,6 +59,7 @@ class MinisterioController extends Controller
     {
         $ministerio = Ministerio::findOrFail($id);
         $ministerio->delete();
+
         return redirect()->route('ministerios.index')->with('success', 'Ministerio eliminado lógicamente.');
     }
 
@@ -61,6 +67,7 @@ class MinisterioController extends Controller
     {
         $ministerio = Ministerio::withTrashed()->findOrFail($id);
         $ministerio->restore();
+
         return redirect()->route('ministerios.index')->with('success', 'Ministerio restaurado con éxito.');
     }
 }

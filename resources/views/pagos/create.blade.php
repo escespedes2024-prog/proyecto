@@ -40,20 +40,20 @@
         @csrf
 
         <div class="form-group">
-            <label class="form-label">Monto (Bs)</label>
-            <input type="number" step="0.01" min="0.01" max="{{ $inscripcion->saldo_pendiente }}" name="monto" class="form-control" value="{{ old('monto') }}" required autocomplete="off">
+            <label for="monto" class="form-label">Monto (Bs)</label>
+            <input type="number" step="0.01" min="0.01" max="{{ $inscripcion->saldo_pendiente }}" name="monto" id="monto" class="form-control" value="{{ old('monto') }}" required autocomplete="off">
             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Máximo Bs {{ number_format($inscripcion->saldo_pendiente, 2) }}</div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label class="form-label">Fecha de Pago</label>
-                <input type="date" name="fecha_pago" class="form-control" value="{{ old('fecha_pago', date('Y-m-d')) }}" required>
+                <label for="fecha_pago" class="form-label">Fecha de Pago</label>
+                <input id="fecha_pago" type="date" name="fecha_pago" class="form-control" value="{{ old('fecha_pago', date('Y-m-d')) }}" required>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Método de Pago</label>
-                <select name="metodo_pago" class="form-control" required>
+                <label for="metodo_pago" class="form-label">Método de Pago</label>
+                <select id="metodo_pago" name="metodo_pago" class="form-control" required>
                     <option value="Efectivo" {{ old('metodo_pago') == 'Efectivo' ? 'selected' : '' }}>Efectivo</option>
                     <option value="Transferencia" {{ old('metodo_pago') == 'Transferencia' ? 'selected' : '' }}>Transferencia</option>
                     <option value="Tarjeta" {{ old('metodo_pago') == 'Tarjeta' ? 'selected' : '' }}>Tarjeta</option>
@@ -62,8 +62,8 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Comprobante / Recibo (Opcional)</label>
-            <input type="text" name="comprobante" class="form-control" value="{{ old('comprobante') }}">
+            <label for="comprobante" class="form-label">Comprobante / Recibo (Opcional)</label>
+            <input id="comprobante" type="text" name="comprobante" class="form-control" value="{{ old('comprobante') }}">
         </div>
 
         <div style="display: flex; gap: 15px; margin-top: 30px;">

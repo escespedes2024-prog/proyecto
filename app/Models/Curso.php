@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Curso extends Model
 {
@@ -44,12 +44,12 @@ class Curso extends Model
 
     public function tieneHorario(): bool
     {
-        return !empty($this->dias_semana) && !is_null($this->hora_inicio);
+        return ! empty($this->dias_semana) && ! is_null($this->hora_inicio);
     }
 
     public function rangoHorario(): string
     {
-        return substr((string) $this->hora_inicio, 0, 5) . ' - ' . substr((string) $this->hora_fin, 0, 5);
+        return substr((string) $this->hora_inicio, 0, 5).' - '.substr((string) $this->hora_fin, 0, 5);
     }
 
     public function docentes(): BelongsToMany

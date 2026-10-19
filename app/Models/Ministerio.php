@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ministerio extends Model
 {
@@ -33,8 +33,8 @@ class Ministerio extends Model
     public function miembros(): BelongsToMany
     {
         return $this->belongsToMany(Miembro::class, 'miembro_ministerio')
-                    ->withPivot(['cargo_id', 'fecha_inicio', 'fecha_fin'])
-                    ->withTimestamps();
+            ->withPivot(['cargo_id', 'fecha_inicio', 'fecha_fin'])
+            ->withTimestamps();
     }
 
     public function actividades(): HasMany

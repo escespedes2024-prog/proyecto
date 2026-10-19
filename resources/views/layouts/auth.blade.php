@@ -46,4 +46,3 @@
     </script>
 </body>
 </html>
-<?php /**PATH C:\laragon\www\proyecto\resources\views/layouts/auth.blade.php ENDPATH**/ ?>

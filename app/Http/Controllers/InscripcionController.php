@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curso;
-use App\Models\PagoCurso;
 use App\Models\Inscripcion;
+use App\Models\PagoCurso;
 use Illuminate\Http\Request;
 
 class InscripcionController extends Controller
@@ -16,8 +16,8 @@ class InscripcionController extends Controller
             ->when($request->filled('q'), function ($q) use ($request) {
                 $termino = trim($request->input('q'));
                 $q->where(function ($sub) use ($termino) {
-                    $sub->where('nombre', 'like', '%' . $termino . '%')
-                        ->orWhere('descripcion', 'like', '%' . $termino . '%');
+                    $sub->where('nombre', 'like', '%'.$termino.'%')
+                        ->orWhere('descripcion', 'like', '%'.$termino.'%');
                 });
             })
             ->when($request->input('tipo') === 'con_pago', fn ($q) => $q->where('tiene_pago', true))
@@ -72,7 +72,7 @@ class InscripcionController extends Controller
         $inscritos = Inscripcion::where('curso_id', $curso->id)->count();
 
         if ($inscritos >= $curso->cupo_max) {
-            return back()->with('error', 'El curso alcanzó su cupo máximo de ' . $curso->cupo_max . ' inscritos.');
+            return back()->with('error', 'El curso alcanzó su cupo máximo de '.$curso->cupo_max.' inscritos.');
         }
 
         Inscripcion::create($validated + [

@@ -17,13 +17,13 @@
     <form method="GET" action="{{ route('contratos.index') }}" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; padding: 15px; border: 1px solid var(--card-border); border-radius: 10px; margin-bottom: 25px;">
         @if(auth()->user()->puede('contratos', 'buscar'))
         <div class="form-group" style="flex: 2; min-width: 200px; margin-bottom: 0;">
-            <label class="form-label">Buscar Miembro</label>
-            <input type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Nombre del miembro...">
+            <label for="q" class="form-label">Buscar Miembro</label>
+            <input id="q" type="text" name="q" class="form-control" value="{{ request('q') }}" placeholder="Nombre del miembro...">
         </div>
         @endif
         <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
-            <label class="form-label">Tipo Compensación</label>
-            <select name="tipo_compensacion" class="form-control">
+            <label for="tipo_compensacion" class="form-label">Tipo Compensación</label>
+            <select id="tipo_compensacion" name="tipo_compensacion" class="form-control">
                 <option value="">Todas...</option>
                 <option value="Salario" {{ request('tipo_compensacion') === 'Salario' ? 'selected' : '' }}>Salario</option>
                 <option value="Bono" {{ request('tipo_compensacion') === 'Bono' ? 'selected' : '' }}>Bono</option>
@@ -32,8 +32,8 @@
             </select>
         </div>
         <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
-            <label class="form-label">Vigencia</label>
-            <select name="estado" class="form-control">
+            <label for="estado" class="form-label">Vigencia</label>
+            <select id="estado" name="estado" class="form-control">
                 @foreach(['vigente' => 'Vigente', 'por_vencer' => 'Por vencer (30 días)', 'vencido' => 'Vencido', 'futuro' => 'Futuro', 'eliminado' => 'Eliminado'] as $valor => $etiqueta)
 
                     <option value="{{ $valor }}" {{ request('estado') === $valor ? 'selected' : '' }}>{{ $etiqueta }}</option>

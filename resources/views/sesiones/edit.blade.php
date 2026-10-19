@@ -23,7 +23,7 @@
         @method('PUT')
 
         <div class="form-group">
-            <label class="form-label">Curso</label>
+            <label for="id_curso" class="form-label">Curso</label>
             <select name="id_curso" id="id_curso" class="form-control" required>
                 <option value="">Seleccione un curso...</option>
                 @foreach($cursos as $curso)
@@ -35,7 +35,7 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Docente (Opcional)</label>
+            <label for="id_docente" class="form-label">Docente (Opcional)</label>
             <select name="id_docente" id="id_docente" class="form-control">
                 <option value="">Sin docente...</option>
                 @foreach($docentes as $docente)
@@ -48,24 +48,24 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label class="form-label">Fecha</label>
+                <label for="fecha" class="form-label">Fecha</label>
                 <input type="date" name="fecha" id="fecha" class="form-control" value="{{ old('fecha', $sesion->fecha ? \Carbon\Carbon::parse($sesion->fecha)->format('Y-m-d') : '') }}" required>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Hora</label>
+                <label for="hora" class="form-label">Hora</label>
                 <input type="time" name="hora" id="hora" class="form-control" value="{{ old('hora', $sesion->hora ? substr((string) $sesion->hora, 0, 5) : '') }}" required>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Tema</label>
-            <input type="text" name="tema" class="form-control" value="{{ old('tema', $sesion->tema) }}" required>
+            <label for="tema" class="form-label">Tema</label>
+            <input id="tema" type="text" name="tema" class="form-control" value="{{ old('tema', $sesion->tema) }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Observación</label>
-            <textarea name="observacion" class="form-control" rows="3">{{ old('observacion', $sesion->observacion) }}</textarea>
+            <label for="observacion" class="form-label">Observación</label>
+            <textarea id="observacion" name="observacion" class="form-control" rows="3">{{ old('observacion', $sesion->observacion) }}</textarea>
         </div>
 
         <div style="display: flex; gap: 15px; margin-top: 30px;">

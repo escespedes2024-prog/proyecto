@@ -63,8 +63,9 @@
                                                 <input type="checkbox"
                                                        name="permisos[{{ $modulo }}][{{ $accionKey }}]"
                                                        value="1"
+                                                       aria-label="{{ $meta['label'] ?? $modulo }}: {{ $accionLabel }}"
                                                        style="width: auto; cursor: pointer;"
-                                                       {{ $marcado ? 'checked' : '' }}>
+                                                       @checked($marcado)>
                                             @else
                                                 <span style="color: var(--text-secondary);">—</span>
                                             @endif

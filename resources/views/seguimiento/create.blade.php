@@ -22,8 +22,8 @@
         @csrf
 
         <div class="form-group">
-            <label class="form-label">Actividad *</label>
-            <select name="id_actividad" class="form-control" required>
+            <label for="id_actividad" class="form-label">Actividad *</label>
+            <select id="id_actividad" name="id_actividad" class="form-control" required>
                 <option value="">Seleccione una actividad...</option>
                 @foreach($actividades as $actividad)
 
@@ -37,24 +37,24 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label class="form-label">Fecha de Registro *</label>
-                <input type="date" name="fecha_registro" class="form-control" value="{{ old('fecha_registro', date('Y-m-d')) }}" required>
+                <label for="fecha_registro" class="form-label">Fecha de Registro *</label>
+                <input id="fecha_registro" type="date" name="fecha_registro" class="form-control" value="{{ old('fecha_registro', date('Y-m-d')) }}" required>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Porcentaje de Avance (%) *</label>
-                <input type="number" name="porcentaje_avance" class="form-control" value="{{ old('porcentaje_avance', 0) }}" min="0" max="100" step="1" required>
+                <label for="porcentaje_avance" class="form-label">Porcentaje de Avance (%) *</label>
+                <input id="porcentaje_avance" type="number" name="porcentaje_avance" class="form-control" value="{{ old('porcentaje_avance', 0) }}" min="0" max="100" step="1" required>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Responsable *</label>
-            <input type="text" name="responsable" class="form-control" value="{{ old('responsable') }}" required>
+            <label for="responsable" class="form-label">Responsable *</label>
+            <input id="responsable" type="text" name="responsable" class="form-control" value="{{ old('responsable') }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Estado *</label>
-            <select name="estado" class="form-control" required>
+            <label for="estado" class="form-label">Estado *</label>
+            <select id="estado" name="estado" class="form-control" required>
                 <option value="En Progreso" {{ old('estado') == 'En Progreso' ? 'selected' : '' }}>En Progreso</option>
                 <option value="Completado" {{ old('estado') == 'Completado' ? 'selected' : '' }}>Completado</option>
                 <option value="Detenido" {{ old('estado') == 'Detenido' ? 'selected' : '' }}>Detenido</option>
@@ -62,8 +62,8 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Observación</label>
-            <textarea name="observacion" class="form-control" rows="4">{{ old('observacion') }}</textarea>
+            <label for="observacion" class="form-label">Observación</label>
+            <textarea id="observacion" name="observacion" class="form-control" rows="4">{{ old('observacion') }}</textarea>
         </div>
 
         <div style="display: flex; gap: 15px; margin-top: 30px;">

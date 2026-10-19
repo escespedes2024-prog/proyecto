@@ -2,34 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LiderIglesia;
-use App\Models\Cargo;
 use App\Http\Requests\LiderIglesiaRequest;
-use Illuminate\Http\Request;
+use App\Models\Cargo;
+use App\Models\LiderIglesia;
 
 class LiderIglesiaController extends Controller
 {
     public function index()
     {
         $lideres = LiderIglesia::with('cargo')->paginate(10);
+
         return view('lideres.index', compact('lideres'));
     }
 
     public function create()
     {
         $cargos = Cargo::all();
+
         return view('lideres.create', compact('cargos'));
     }
 
     public function store(LiderIglesiaRequest $request)
     {
         LiderIglesia::create($request->validated());
+
         return redirect()->route('lideres.index')->with('success', 'Líder de iglesia registrado con éxito.');
     }
 
     public function show($id)
     {
         $lider = LiderIglesia::with('cargo')->withTrashed()->findOrFail($id);
+
         return view('lideres.show', compact('lider'));
     }
 
@@ -37,6 +40,7 @@ class LiderIglesiaController extends Controller
     {
         $lider = LiderIglesia::withTrashed()->findOrFail($id);
         $cargos = Cargo::all();
+
         return view('lideres.edit', compact('lider', 'cargos'));
     }
 
@@ -44,6 +48,7 @@ class LiderIglesiaController extends Controller
     {
         $lider = LiderIglesia::withTrashed()->findOrFail($id);
         $lider->update($request->validated());
+
         return redirect()->route('lideres.index')->with('success', 'Líder de iglesia actualizado con éxito.');
     }
 
@@ -51,6 +56,7 @@ class LiderIglesiaController extends Controller
     {
         $lider = LiderIglesia::findOrFail($id);
         $lider->delete();
+
         return redirect()->route('lideres.index')->with('success', 'Líder eliminado lógicamente.');
     }
 
@@ -58,6 +64,7 @@ class LiderIglesiaController extends Controller
     {
         $lider = LiderIglesia::withTrashed()->findOrFail($id);
         $lider->restore();
+
         return redirect()->route('lideres.index')->with('success', 'Líder restaurado con éxito.');
     }
 }

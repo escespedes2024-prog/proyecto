@@ -23,36 +23,36 @@
         @method('PUT')
 
         <div class="form-group">
-            <label class="form-label">Nombre Completo</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $miembro->nombre) }}" required>
+            <label for="nombre" class="form-label">Nombre Completo</label>
+            <input type="text" name="nombre" id="nombre" class="form-control" value="{{ old('nombre', $miembro->nombre) }}" required>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label class="form-label">Correo Electrónico</label>
-                <input type="email" name="email" class="form-control" value="{{ old('email', $miembro->email) }}">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input id="email" type="email" name="email" class="form-control" value="{{ old('email', $miembro->email) }}">
             </div>
             
             <div class="form-group">
-                <label class="form-label">Teléfono</label>
-                <input type="text" name="telefono" class="form-control" value="{{ old('telefono', $miembro->telefono) }}" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8)" placeholder="Máximo 8 números">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="text" name="telefono" id="telefono" class="form-control" value="{{ old('telefono', $miembro->telefono) }}" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8)" placeholder="Máximo 8 números">
             </div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Dirección</label>
-            <input type="text" name="direccion" class="form-control" value="{{ old('direccion', $miembro->direccion) }}">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion', $miembro->direccion) }}">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label class="form-label">Fecha de Nacimiento</label>
-                <input type="date" name="f_nacimiento" class="form-control" value="{{ old('f_nacimiento', $miembro->f_nacimiento) }}">
+                <label for="f_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                <input type="date" name="f_nacimiento" id="f_nacimiento" class="form-control" value="{{ old('f_nacimiento', $miembro->f_nacimiento) }}">
             </div>
             
             <div class="form-group">
-                <label class="form-label">Sexo</label>
-                <select name="sexo" class="form-control">
+                <label for="sexo" class="form-label">Sexo</label>
+                <select name="sexo" id="sexo" class="form-control">
                     <option value="">Seleccione...</option>
                     <option value="Masculino" {{ old('sexo', $miembro->sexo) == 'Masculino' ? 'selected' : '' }}>Masculino</option>
                     <option value="Femenino" {{ old('sexo', $miembro->sexo) == 'Femenino' ? 'selected' : '' }}>Femenino</option>
@@ -62,13 +62,13 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label class="form-label">Fecha de Ingreso</label>
-                <input type="date" name="fecha_ingreso" class="form-control" value="{{ old('fecha_ingreso', $miembro->fecha_ingreso) }}" required>
+                <label for="fecha_ingreso" class="form-label">Fecha de Ingreso</label>
+                <input type="date" name="fecha_ingreso" id="fecha_ingreso" class="form-control" value="{{ old('fecha_ingreso', $miembro->fecha_ingreso) }}" required>
             </div>
             
             <div class="form-group">
-                <label class="form-label">Estado</label>
-                <select name="estado" class="form-control" required>
+                <label for="estado" class="form-label">Estado</label>
+                <select name="estado" id="estado" class="form-control" required>
                     <option value="Activo" {{ old('estado', $miembro->estado) == 'Activo' ? 'selected' : '' }}>Activo</option>
                     <option value="Inactivo" {{ old('estado', $miembro->estado) == 'Inactivo' ? 'selected' : '' }}>Inactivo</option>
                 </select>

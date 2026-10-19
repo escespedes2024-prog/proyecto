@@ -2,34 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ActividadRequest;
 use App\Models\Actividad;
 use App\Models\Ministerio;
-use App\Http\Requests\ActividadRequest;
-use Illuminate\Http\Request;
 
 class ActividadController extends Controller
 {
     public function index()
     {
         $actividades = Actividad::with('ministerio')->paginate(10);
+
         return view('actividades.index', compact('actividades'));
     }
 
     public function create()
     {
         $ministerios = Ministerio::all();
+
         return view('actividades.create', compact('ministerios'));
     }
 
     public function store(ActividadRequest $request)
     {
         Actividad::create($request->validated());
+
         return redirect()->route('actividades.index')->with('success', 'Actividad registrada con éxito.');
     }
 
     public function show($id)
     {
         $actividad = Actividad::with(['ministerio', 'seguimientos'])->withTrashed()->findOrFail($id);
+
         return view('actividades.show', compact('actividad'));
     }
 
@@ -37,6 +40,7 @@ class ActividadController extends Controller
     {
         $actividad = Actividad::withTrashed()->findOrFail($id);
         $ministerios = Ministerio::all();
+
         return view('actividades.edit', compact('actividad', 'ministerios'));
     }
 
@@ -44,6 +48,7 @@ class ActividadController extends Controller
     {
         $actividad = Actividad::withTrashed()->findOrFail($id);
         $actividad->update($request->validated());
+
         return redirect()->route('actividades.index')->with('success', 'Actividad actualizada con éxito.');
     }
 
@@ -51,6 +56,7 @@ class ActividadController extends Controller
     {
         $actividad = Actividad::findOrFail($id);
         $actividad->delete();
+
         return redirect()->route('actividades.index')->with('success', 'Actividad eliminada lógicamente.');
     }
 
@@ -58,6 +64,7 @@ class ActividadController extends Controller
     {
         $actividad = Actividad::withTrashed()->findOrFail($id);
         $actividad->restore();
+
         return redirect()->route('actividades.index')->with('success', 'Actividad restaurada con éxito.');
     }
 }

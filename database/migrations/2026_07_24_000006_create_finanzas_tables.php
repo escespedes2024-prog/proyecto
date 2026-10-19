@@ -15,16 +15,16 @@ return new class extends Migration
             $table->date('fecha_pago');
             $table->string('metodo_pago');
             $table->string('comprobante')->nullable();
-            $table->foreignId('registrado_por')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('registrado_por')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });
 
         Schema::create('ingresos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_actividad')->nullable()->constrained('actividades')->onDelete('set null');
-            $table->foreignId('id_culto')->nullable()->constrained('cultos')->onDelete('set null');
-            $table->foreignId('pago_curso_id')->nullable()->constrained('pago_cursos')->onDelete('set null');
+            $table->foreignId('id_actividad')->nullable()->constrained('actividades')->nullOnDelete();
+            $table->foreignId('id_culto')->nullable()->constrained('cultos')->nullOnDelete();
+            $table->foreignId('pago_curso_id')->nullable()->constrained('pago_cursos')->nullOnDelete();
             $table->decimal('monto_total', 12, 2);
             $table->date('fecha');
             $table->string('tipo'); // Diezmo, Ofrenda, Donación, Inscripción, etc.
@@ -35,7 +35,7 @@ return new class extends Migration
 
         Schema::create('egresos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_contrato')->nullable()->constrained('contratos')->onDelete('set null');
+            $table->foreignId('id_contrato')->nullable()->constrained('contratos')->nullOnDelete();
             $table->string('tipo_egreso'); // Servicio, Mantenimiento, Salario, Ayuda Social, etc.
             $table->decimal('monto', 12, 2);
             $table->date('fecha');

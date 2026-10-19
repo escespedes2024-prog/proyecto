@@ -23,7 +23,7 @@
 </div>
 
 <button type="button" class="report-preview-exit" data-report-preview-exit hidden>Cerrar vista previa</button>
-<p class="report-toast" data-report-toast role="status" aria-live="polite"></p>
+<output class="report-toast" data-report-toast aria-live="polite"></output>
 
 @push('scripts')
 <script>

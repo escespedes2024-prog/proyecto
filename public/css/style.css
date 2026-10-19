@@ -210,23 +210,35 @@ input[type="date"] {
 .alert-success {
     background: rgba(40, 167, 69, 0.14);
     border: 1px solid rgba(40, 167, 69, 0.35);
+    color: #0a2916;
+}
+
+[data-theme="dark"] .alert-success {
     color: #5fc97c;
 }
 
 .alert-danger {
     background: rgba(220, 53, 69, 0.14);
     border: 1px solid rgba(220, 53, 69, 0.35);
+    color: #000000;
+}
+
+[data-theme="dark"] .alert-danger {
     color: #ef8090;
 }
 
 .alert-warning {
     background: rgba(240, 176, 32, 0.14);
     border: 1px solid rgba(240, 176, 32, 0.4);
+    color: #5c3d05;
+}
+
+[data-theme="dark"] .alert-warning {
     color: #e8b34d;
 }
 
 [data-theme="light"] .alert-warning {
-    color: #9c6d06;
+    color: #854d0e;
 }
 
 .alert ul {
@@ -686,7 +698,7 @@ input[type="date"] {
 }
 
 .badge-info {
-    background: #1f7bd6;
+    background: #1a6fc4;
     color: #ffffff;
 }
 
@@ -774,8 +786,13 @@ input[type="date"] {
 }
 
 .btn-icon:hover {
-    background: rgba(56, 189, 248, 0.12);
+    background: #1e2e37;
     color: #38bdf8;
+}
+
+[data-theme="light"] .btn-icon:hover {
+    background: rgba(56, 189, 248, 0.12);
+    color: #063352;
 }
 
 .btn-icon.btn-edit {
@@ -839,8 +856,12 @@ input[type="date"] {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
     padding: 9px 12px;
     margin-top: 14px;
+    background: none;
+    border: none;
+    font-family: inherit;
     font-size: 0.78rem;
     text-transform: uppercase;
     color: var(--text-secondary);
@@ -889,6 +910,8 @@ input[type="date"] {
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.55);
+    border: none;
+    padding: 0;
     z-index: 998;
 }
 
@@ -1188,7 +1211,7 @@ input[type="date"] {
 }
 
 [data-theme="light"] .alert-success {
-    color: #1f8a3d;
+    color: #166534;
 }
 
 [data-theme="light"] .alert-danger {
@@ -1530,7 +1553,7 @@ input[type="date"] {
 .report-badge--success { background: #e4f5e8; color: #157a31; border-color: #b7e0c1; }
 .report-badge--muted { background: #eceef0; color: #55606b; border-color: #d3d8dd; }
 .report-badge--danger { background: #fdeaea; color: #b32424; border-color: #f3c4c4; }
-.report-badge--warning { background: #fdf3dd; color: #9a6b06; border-color: #f0dcae; }
+.report-badge--warning { background: #fdf3dd; color: #854d0e; border-color: #f0dcae; }
 .report-badge--info { background: #e7f0fb; color: #1a5fb0; border-color: #c3daf5; }
 
 .report-empty {

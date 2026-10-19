@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sesion;
 use App\Models\Curso;
 use App\Models\Docente;
 use App\Models\Inscripcion;
+use App\Models\Sesion;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +16,7 @@ class SesionController extends Controller
     public function index()
     {
         $sesiones = Sesion::with(['curso', 'docente'])->paginate(10);
+
         return view('sesiones.index', compact('sesiones'));
     }
 
@@ -25,7 +26,7 @@ class SesionController extends Controller
         $docentes = Docente::with('miembro')->where('activo', true)->get()->sortBy('miembro.nombre')->values();
 
         $docentesPorCurso = $cursos->mapWithKeys(fn ($c) => [
-            $c->id => $c->docentes->pluck('id')->toArray()
+            $c->id => $c->docentes->pluck('id')->toArray(),
         ]);
 
         $cursosData = $this->cursosParaJS($cursos);
@@ -47,6 +48,7 @@ class SesionController extends Controller
         $this->validarHorarioCurso($validated);
 
         Sesion::create($validated);
+
         return redirect()->route('sesiones.index')->with('success', 'Sesión creada con éxito.');
     }
 
@@ -91,7 +93,7 @@ class SesionController extends Controller
         $docentes = Docente::with('miembro')->where('activo', true)->get()->sortBy('miembro.nombre')->values();
 
         $docentesPorCurso = $cursos->mapWithKeys(fn ($c) => [
-            $c->id => $c->docentes->pluck('id')->toArray()
+            $c->id => $c->docentes->pluck('id')->toArray(),
         ]);
 
         $cursosData = $this->cursosParaJS($cursos);
@@ -107,10 +109,10 @@ class SesionController extends Controller
                 'hora_fin' => $c->hora_fin ? substr((string) $c->hora_fin, 0, 5) : null,
                 'dias_semana' => $c->dias_semana ?? [],
                 'dias_nombres' => $c->dias_nombres,
-                'f_inicio' => $c->f_inicio ? \Carbon\Carbon::parse($c->f_inicio)->format('Y-m-d') : null,
-                'f_fin' => $c->f_fin ? \Carbon\Carbon::parse($c->f_fin)->format('Y-m-d') : null,
+                'f_inicio' => $c->f_inicio ? Carbon::parse($c->f_inicio)->format('Y-m-d') : null,
+                'f_fin' => $c->f_fin ? Carbon::parse($c->f_fin)->format('Y-m-d') : null,
                 'docentes' => $c->docentes->pluck('id')->toArray(),
-            ]
+            ],
         ]);
     }
 
@@ -130,6 +132,7 @@ class SesionController extends Controller
         $this->validarHorarioCurso($validated, $sesion->id);
 
         $sesion->update($validated);
+
         return redirect()->route('sesiones.index')->with('success', 'Sesión actualizada con éxito.');
     }
 
@@ -137,6 +140,7 @@ class SesionController extends Controller
     {
         $sesion = Sesion::findOrFail($id);
         $sesion->delete();
+
         return redirect()->route('sesiones.index')->with('success', 'Sesión eliminada lógicamente.');
     }
 
@@ -144,23 +148,28 @@ class SesionController extends Controller
     {
         $sesion = Sesion::withTrashed()->findOrFail($id);
         $sesion->restore();
+
         return redirect()->route('sesiones.index')->with('success', 'Sesión restaurada con éxito.');
     }
 
     public function generar(Curso $curso)
     {
-        if (!$curso->f_fin) {
-            return back()->with('error', 'El curso necesita fecha de fin para poder generar sesiones automáticamente.');
+        $errorPrevio = null;
+
+        if (! $curso->f_fin) {
+            $errorPrevio = 'El curso necesita fecha de fin para poder generar sesiones automáticamente.';
+        } elseif (! $curso->tieneHorario()) {
+            $errorPrevio = 'Configura primero los días y hora de inicio del curso.';
         }
 
-        if (!$curso->tieneHorario()) {
-            return back()->with('error', 'Configura primero los días y hora de inicio del curso.');
+        if ($errorPrevio !== null) {
+            return back()->with('error', $errorPrevio);
         }
 
         $existentes = Sesion::withTrashed()
             ->where('id_curso', $curso->id)
             ->get()
-            ->map(fn ($s) => Carbon::parse($s->fecha)->toDateString() . ' ' . substr((string) $s->hora, 0, 5))
+            ->map(fn ($s) => Carbon::parse($s->fecha)->toDateString().' '.substr((string) $s->hora, 0, 5))
             ->all();
 
         $creadas = 0;
@@ -172,14 +181,14 @@ class SesionController extends Controller
 
         while ($fecha->lte($fin)) {
             if (in_array($fecha->dayOfWeekIso, $diasCurso, true)) {
-                $clave = $fecha->toDateString() . ' ' . $hora;
+                $clave = $fecha->toDateString().' '.$hora;
 
-                if (!in_array($clave, $existentes)) {
+                if (! in_array($clave, $existentes)) {
                     Sesion::create([
                         'id_curso' => $curso->id,
                         'fecha' => $fecha->toDateString(),
                         'hora' => $curso->hora_inicio,
-                        'tema' => 'Sesión ' . ($creadas + 1),
+                        'tema' => 'Sesión '.($creadas + 1),
                     ]);
                     $creadas++;
                 }
@@ -195,11 +204,63 @@ class SesionController extends Controller
             ->with('success', "Se generaron {$creadas} sesiones automáticamente para el curso {$curso->nombre}.");
     }
 
+    private function validarRangoFechas(Curso $curso, Carbon $fecha, array &$errores): void
+    {
+        if ($fecha->lt(Carbon::parse($curso->f_inicio))) {
+            $errores['fecha'] = 'La fecha es anterior al inicio del curso ('.Carbon::parse($curso->f_inicio)->format('d/m/Y').').';
+        } elseif ($curso->f_fin && $fecha->gt(Carbon::parse($curso->f_fin))) {
+            $errores['fecha'] = 'La fecha es posterior al fin del curso ('.Carbon::parse($curso->f_fin)->format('d/m/Y').').';
+        }
+    }
+
+    private function validarDiaHorario(Curso $curso, Carbon $fecha, string $horaInput, array &$errores): void
+    {
+        $diasCurso = array_map('intval', $curso->dias_semana ?? []);
+
+        if (! empty($diasCurso) && ! in_array($fecha->dayOfWeekIso, $diasCurso, true)) {
+            $errores['fecha'] = 'Este curso se dicta los días '.$curso->dias_nombres.'. Elige una fecha dentro del horario asignado.';
+        }
+
+        if ($curso->hora_inicio && $horaInput !== substr((string) $curso->hora_inicio, 0, 5)) {
+            $errores['hora'] = 'Las sesiones de este curso son a las '.substr((string) $curso->hora_inicio, 0, 5).'.';
+        }
+    }
+
+    private function validarSesionDuplicada(Curso $curso, array $datos, ?int $ignorarSesionId, array &$errores): void
+    {
+        $queryDuplicada = Sesion::where('id_curso', $curso->id)->whereDate('fecha', $datos['fecha']);
+
+        if ($ignorarSesionId) {
+            $queryDuplicada->where('id', '!=', $ignorarSesionId);
+        }
+
+        if ($queryDuplicada->exists()) {
+            $errores['fecha'] = 'Ya existe una sesión para este curso en esa fecha.';
+        }
+    }
+
+    private function validarDocenteOcupado(array $datos, ?int $ignorarSesionId, array &$errores): void
+    {
+        $queryDocente = Sesion::where('id_docente', $datos['id_docente'])
+            ->whereDate('fecha', $datos['fecha'])
+            ->whereTime('hora', $datos['hora']);
+
+        if ($ignorarSesionId) {
+            $queryDocente->where('id', '!=', $ignorarSesionId);
+        }
+
+        if ($queryDocente->exists()) {
+            $docente = Docente::with('miembro')->find($datos['id_docente']);
+            $nombre = $docente?->miembro?->nombre ?? 'El docente';
+            $errores['id_docente'] = 'Ya existe una sesión de '.$nombre.' en esa fecha y hora.';
+        }
+    }
+
     private function validarHorarioCurso(array $datos, ?int $ignorarSesionId = null): void
     {
         $curso = Curso::find($datos['id_curso']);
 
-        if (!$curso) {
+        if (! $curso) {
             return;
         }
 
@@ -207,48 +268,15 @@ class SesionController extends Controller
         $fecha = Carbon::parse($datos['fecha']);
         $horaInput = substr($datos['hora'], 0, 5);
 
-        if ($fecha->lt(Carbon::parse($curso->f_inicio))) {
-            $errores['fecha'] = 'La fecha es anterior al inicio del curso (' . Carbon::parse($curso->f_inicio)->format('d/m/Y') . ').';
-        } elseif ($curso->f_fin && $fecha->gt(Carbon::parse($curso->f_fin))) {
-            $errores['fecha'] = 'La fecha es posterior al fin del curso (' . Carbon::parse($curso->f_fin)->format('d/m/Y') . ').';
+        $this->validarRangoFechas($curso, $fecha, $errores);
+        $this->validarDiaHorario($curso, $fecha, $horaInput, $errores);
+
+        if (! $errores) {
+            $this->validarSesionDuplicada($curso, $datos, $ignorarSesionId, $errores);
         }
 
-        $diasCurso = array_map('intval', $curso->dias_semana ?? []);
-
-        if (!empty($diasCurso) && !in_array($fecha->dayOfWeekIso, $diasCurso, true)) {
-            $errores['fecha'] = 'Este curso se dicta los días ' . $curso->dias_nombres . '. Elige una fecha dentro del horario asignado.';
-        }
-
-        if ($curso->hora_inicio && $horaInput !== substr((string) $curso->hora_inicio, 0, 5)) {
-            $errores['hora'] = 'Las sesiones de este curso son a las ' . substr((string) $curso->hora_inicio, 0, 5) . '.';
-        }
-
-        if (!$errores) {
-            $queryDuplicada = Sesion::where('id_curso', $curso->id)->whereDate('fecha', $datos['fecha']);
-
-            if ($ignorarSesionId) {
-                $queryDuplicada->where('id', '!=', $ignorarSesionId);
-            }
-
-            if ($queryDuplicada->exists()) {
-                $errores['fecha'] = 'Ya existe una sesión para este curso en esa fecha.';
-            }
-        }
-
-        if (!$errores && !empty($datos['id_docente'])) {
-            $queryDocente = Sesion::where('id_docente', $datos['id_docente'])
-                ->whereDate('fecha', $datos['fecha'])
-                ->whereTime('hora', $datos['hora']);
-
-            if ($ignorarSesionId) {
-                $queryDocente->where('id', '!=', $ignorarSesionId);
-            }
-
-            if ($queryDocente->exists()) {
-                $docente = Docente::with('miembro')->find($datos['id_docente']);
-                $nombre = $docente?->miembro?->nombre ?? 'El docente';
-                $errores['id_docente'] = 'Ya existe una sesión de ' . $nombre . ' en esa fecha y hora.';
-            }
+        if (! $errores && ! empty($datos['id_docente'])) {
+            $this->validarDocenteOcupado($datos, $ignorarSesionId, $errores);
         }
 
         if ($errores) {

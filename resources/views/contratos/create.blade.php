@@ -22,8 +22,8 @@
         @csrf
 
         <div class="form-group">
-            <label class="form-label">Miembro *</label>
-            <select name="id_miembro" class="form-control" required>
+            <label for="id_miembro" class="form-label">Miembro *</label>
+            <select id="id_miembro" name="id_miembro" class="form-control" required>
                 <option value="">Seleccione un miembro...</option>
                 @foreach($miembros as $miembro)
 
@@ -37,7 +37,7 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Líder de Iglesia *</label>
+            <label for="id_lider_iglesia" class="form-label">Líder de Iglesia *</label>
             <select name="id_lider_iglesia" id="id_lider_iglesia" class="form-control" required onchange="mostrarCargo()">
                 <option value="">Seleccione un líder...</option>
                 @foreach($lideres as $lider)
@@ -58,7 +58,7 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Tipo de Compensación *</label>
+            <label for="tipo_compensacion" class="form-label">Tipo de Compensación *</label>
             <select name="tipo_compensacion" id="tipo_compensacion" class="form-control" required onchange="toggleSalario()">
                 @foreach($tiposCompensacion as $valor => $etiqueta)
 
@@ -70,18 +70,18 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Salario / Monto <span id="salario-label">(Requerido)</span></label>
+            <label for="salario" class="form-label">Salario / Monto <span id="salario-label">(Requerido)</span></label>
             <input type="number" name="salario" id="salario" class="form-control" step="0.01" min="0" value="{{ old('salario', 0) }}">
         </div>
 
         <div style="display: flex; gap: 15px;">
             <div class="form-group" style="flex: 1;">
-                <label class="form-label">Fecha de Inicio *</label>
-                <input type="date" name="fecha_inicio" class="form-control" value="{{ old('fecha_inicio', date('Y-m-d')) }}" required>
+                <label for="fecha_inicio" class="form-label">Fecha de Inicio *</label>
+                <input id="fecha_inicio" type="date" name="fecha_inicio" class="form-control" value="{{ old('fecha_inicio', date('Y-m-d')) }}" required>
             </div>
             <div class="form-group" style="flex: 1;">
-                <label class="form-label">Fecha de Fin (Opcional)</label>
-                <input type="date" name="fecha_fin" class="form-control" value="{{ old('fecha_fin') }}">
+                <label for="fecha_fin" class="form-label">Fecha de Fin (Opcional)</label>
+                <input id="fecha_fin" type="date" name="fecha_fin" class="form-control" value="{{ old('fecha_fin') }}">
             </div>
         </div>
 

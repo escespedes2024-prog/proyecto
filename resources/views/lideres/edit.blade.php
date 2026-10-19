@@ -23,8 +23,8 @@
         @method('PUT')
 
         <div class="form-group">
-            <label class="form-label">Cargo</label>
-            <select name="id_cargo" class="form-control" required>
+            <label for="id_cargo" class="form-label">Cargo</label>
+            <select id="id_cargo" name="id_cargo" class="form-control" required>
                 <option value="">Seleccione...</option>
                 @foreach($cargos as $cargo)
 
@@ -35,25 +35,25 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Nombre Completo</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $lider->nombre) }}" required>
+            <label for="nombre" class="form-label">Nombre Completo</label>
+            <input id="nombre" type="text" name="nombre" class="form-control" value="{{ old('nombre', $lider->nombre) }}" required>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label class="form-label">Teléfono</label>
-                <input type="text" name="telefono" class="form-control" value="{{ old('telefono', $lider->telefono) }}" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8)" placeholder="Máximo 8 números">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input id="telefono" type="text" name="telefono" class="form-control" value="{{ old('telefono', $lider->telefono) }}" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8)" placeholder="Máximo 8 números">
             </div>
             
             <div class="form-group">
-                <label class="form-label">Fecha de Inicio</label>
-                <input type="date" name="fecha_inicio" class="form-control" value="{{ old('fecha_inicio', $lider->fecha_inicio) }}" required>
+                <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                <input id="fecha_inicio" type="date" name="fecha_inicio" class="form-control" value="{{ old('fecha_inicio', $lider->fecha_inicio) }}" required>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Estado</label>
-            <select name="activo" class="form-control" required>
+            <label for="activo" class="form-label">Estado</label>
+            <select id="activo" name="activo" class="form-control" required>
                 <option value="1" {{ old('activo', $lider->activo) == '1' ? 'selected' : '' }}>Activo</option>
                 <option value="0" {{ old('activo', $lider->activo) == '0' ? 'selected' : '' }}>Inactivo</option>
             </select>

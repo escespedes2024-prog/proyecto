@@ -7,7 +7,7 @@
     <h3 style="font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">Seleccionar Sesión</h3>
     <form method="GET" action="{{ route('asistencia.registrar') }}" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
         <div style="flex: 1; min-width: 200px;">
-            <label class="form-label">Curso</label>
+            <label for="filtro_curso" class="form-label">Curso</label>
             <select name="curso_id" id="filtro_curso" class="form-control">
                 <option value="">Todos los cursos...</option>
                 @foreach($cursos as $curso)
@@ -16,7 +16,7 @@
             </select>
         </div>
         <div style="flex: 1; min-width: 250px;">
-            <label class="form-label">Sesión</label>
+            <label for="select_sesion" class="form-label">Sesión</label>
             <select name="sesion_id" id="select_sesion" class="form-control" required>
                 <option value="">Seleccione una sesión...</option>
                 @foreach($cursos as $curso)
@@ -74,7 +74,7 @@
                 <thead>
                     <tr>
                         <th>Miembro</th>
-                        <th>Estado</th>
+                        <th id="col-estado">Estado</th>
                         <th>Observación</th>
                     </tr>
                 </thead>
@@ -86,14 +86,14 @@
                         <tr>
                             <td>{{ $inscrito->miembro->nombre ?? 'N/A' }}</td>
                             <td>
-                                <select name="asistencia[{{ $inscrito->miembro_id }}][estado]" class="form-control" style="min-width: 140px;">
+                                <select name="asistencia[{{ $inscrito->miembro_id }}][estado]" aria-labelledby="col-estado" class="form-control" style="min-width: 140px;">
                                     @foreach(['Presente', 'Ausente', 'Tardanza', 'Justificado'] as $estado)
                                         <option value="{{ $estado }}" {{ ($actual?->estado ?? 'Ausente') == $estado ? 'selected' : '' }}>{{ $estado }}</option>
                                     @endforeach
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="asistencia[{{ $inscrito->miembro_id }}][observacion]" class="form-control" value="{{ $actual?->observacion ?? '' }}" placeholder="Opcional...">
+                                <input type="text" name="asistencia[{{ $inscrito->miembro_id }}][observacion]" aria-label="Observacion de {{ $inscrito->miembro->nombre ?? 'N/A' }}" class="form-control" value="{{ $actual?->observacion ?? '' }}" placeholder="Opcional...">
                             </td>
                         </tr>
                     @endforeach

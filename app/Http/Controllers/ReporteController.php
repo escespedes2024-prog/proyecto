@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asistencia;
+use App\Models\Curso;
 use App\Models\Egreso;
 use App\Models\Ingreso;
-use App\Models\Inscripcion;
 use App\Models\Miembro;
-use App\Models\Sesion;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
 {
@@ -53,7 +51,7 @@ class ReporteController extends Controller
         $desde = $request->input('desde', '');
         $hasta = $request->input('hasta', '');
 
-        $cursos = \App\Models\Curso::orderBy('nombre')->get();
+        $cursos = Curso::orderBy('nombre')->get();
 
         $query = Asistencia::with(['miembro', 'sesion.curso']);
 

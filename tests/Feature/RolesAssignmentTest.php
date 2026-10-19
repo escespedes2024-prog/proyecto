@@ -15,6 +15,8 @@ class RolesAssignmentTest extends TestCase
 
     private User $objetivo;
 
+    private const EMAIL_OBJETIVO = 'objetivo@proyecto.com';
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,7 +37,7 @@ class RolesAssignmentTest extends TestCase
 
         $this->objetivo = User::factory()->create([
             'name' => 'Usuario Objetivo',
-            'email' => 'objetivo@proyecto.com',
+            'email' => self::EMAIL_OBJETIVO,
         ]);
     }
 
@@ -47,7 +49,7 @@ class RolesAssignmentTest extends TestCase
             ->assertSee('Asignar Rol')
             ->assertSee('Gestiona los roles asignados a los usuarios del sistema')
             ->assertSee('Usuario Objetivo')
-            ->assertSee('objetivo@proyecto.com')
+            ->assertSee(self::EMAIL_OBJETIVO)
             ->assertSee('Sin roles');
     }
 
@@ -57,7 +59,7 @@ class RolesAssignmentTest extends TestCase
             ->get(route('roles.user.edit', $this->objetivo->id))
             ->assertOk()
             ->assertSee('Asignar Roles')
-            ->assertSee('objetivo@proyecto.com')
+            ->assertSee(self::EMAIL_OBJETIVO)
             ->assertSee('Administrador')
             ->assertSee('Secretario')
             ->assertSee('Apoyo administrativo');

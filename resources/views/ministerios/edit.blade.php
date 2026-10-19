@@ -23,17 +23,17 @@
         @method('PUT')
 
         <div class="form-group">
-            <label class="form-label">Nombre del Ministerio</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre', $ministerio->nombre) }}" required>
+            <label for="nombre" class="form-label">Nombre del Ministerio</label>
+            <input id="nombre" type="text" name="nombre" class="form-control" value="{{ old('nombre', $ministerio->nombre) }}" required>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Descripción</label>
-            <textarea name="descripcion" class="form-control" rows="3">{{ old('descripcion', $ministerio->descripcion) }}</textarea>
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea id="descripcion" name="descripcion" class="form-control" rows="3">{{ old('descripcion', $ministerio->descripcion) }}</textarea>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Líder Asignado</label>
+            <label for="tipo-lider" class="form-label">Líder Asignado</label>
             <select name="liderable_type" id="tipo-lider" class="form-control" onchange="toggleLiderSelect()">
                 <option value="">Sin líder asignado</option>
                 <option value="App\Models\Miembro" {{ old('liderable_type', $ministerio->liderable_type) == 'App\Models\Miembro' ? 'selected' : '' }}>Miembro</option>
@@ -42,7 +42,7 @@
         </div>
 
         <div class="form-group" id="group-miembros">
-            <label class="form-label">Seleccionar Miembro</label>
+            <label for="select-miembros" class="form-label">Seleccionar Miembro</label>
             <select name="liderable_id" id="select-miembros" class="form-control">
                 <option value="">Seleccione...</option>
                 @foreach($miembros as $miembro)
@@ -54,7 +54,7 @@
         </div>
 
         <div class="form-group" id="group-lideres" style="display: none;">
-            <label class="form-label">Seleccionar Líder de Iglesia</label>
+            <label for="select-lideres" class="form-label">Seleccionar Líder de Iglesia</label>
             <select name="liderable_id" id="select-lideres" class="form-control" disabled>
                 <option value="">Seleccione...</option>
                 @foreach($lideres as $lider)

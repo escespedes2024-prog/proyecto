@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cargo;
 use App\Http\Requests\CargoRequest;
-use Illuminate\Http\Request;
+use App\Models\Cargo;
 
 class CargoController extends Controller
 {
@@ -12,6 +11,7 @@ class CargoController extends Controller
     {
         // Paginación y soporte para ver elementos eliminados
         $cargos = Cargo::paginate(10);
+
         return view('cargos.index', compact('cargos'));
     }
 
@@ -23,18 +23,21 @@ class CargoController extends Controller
     public function store(CargoRequest $request)
     {
         Cargo::create($request->validated());
+
         return redirect()->route('cargos.index')->with('success', 'Cargo creado con éxito.');
     }
 
     public function show($id)
     {
         $cargo = Cargo::withTrashed()->findOrFail($id);
+
         return view('cargos.show', compact('cargo'));
     }
 
     public function edit($id)
     {
         $cargo = Cargo::withTrashed()->findOrFail($id);
+
         return view('cargos.edit', compact('cargo'));
     }
 
@@ -42,6 +45,7 @@ class CargoController extends Controller
     {
         $cargo = Cargo::withTrashed()->findOrFail($id);
         $cargo->update($request->validated());
+
         return redirect()->route('cargos.index')->with('success', 'Cargo actualizado con éxito.');
     }
 
@@ -49,6 +53,7 @@ class CargoController extends Controller
     {
         $cargo = Cargo::findOrFail($id);
         $cargo->delete(); // Borrado lógico
+
         return redirect()->route('cargos.index')->with('success', 'Cargo eliminado lógicamente.');
     }
 
@@ -56,6 +61,7 @@ class CargoController extends Controller
     {
         $cargo = Cargo::withTrashed()->findOrFail($id);
         $cargo->restore(); // Restauración
+
         return redirect()->route('cargos.index')->with('success', 'Cargo restaurado con éxito.');
     }
 }

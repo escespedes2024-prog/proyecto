@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SeguimientoActividad;
 use App\Models\Actividad;
+use App\Models\SeguimientoActividad;
 use Illuminate\Http\Request;
 
 class SeguimientoActividadController extends Controller
@@ -11,12 +11,14 @@ class SeguimientoActividadController extends Controller
     public function index()
     {
         $seguimientos = SeguimientoActividad::with('actividad')->paginate(10);
+
         return view('seguimiento.index', compact('seguimientos'));
     }
 
     public function create()
     {
         $actividades = Actividad::all();
+
         return view('seguimiento.create', compact('actividades'));
     }
 
@@ -32,12 +34,14 @@ class SeguimientoActividadController extends Controller
         ]);
 
         SeguimientoActividad::create($validated);
+
         return redirect()->route('seguimiento.index')->with('success', 'Seguimiento registrado con éxito.');
     }
 
     public function show($id)
     {
         $seguimiento = SeguimientoActividad::with('actividad')->withTrashed()->findOrFail($id);
+
         return view('seguimiento.show', compact('seguimiento'));
     }
 
@@ -45,6 +49,7 @@ class SeguimientoActividadController extends Controller
     {
         $seguimiento = SeguimientoActividad::withTrashed()->findOrFail($id);
         $actividades = Actividad::all();
+
         return view('seguimiento.edit', compact('seguimiento', 'actividades'));
     }
 
@@ -62,6 +67,7 @@ class SeguimientoActividadController extends Controller
         ]);
 
         $seguimiento->update($validated);
+
         return redirect()->route('seguimiento.index')->with('success', 'Seguimiento actualizado con éxito.');
     }
 
@@ -69,6 +75,7 @@ class SeguimientoActividadController extends Controller
     {
         $seguimiento = SeguimientoActividad::findOrFail($id);
         $seguimiento->delete();
+
         return redirect()->route('seguimiento.index')->with('success', 'Seguimiento eliminado lógicamente.');
     }
 
@@ -76,6 +83,7 @@ class SeguimientoActividadController extends Controller
     {
         $seguimiento = SeguimientoActividad::withTrashed()->findOrFail($id);
         $seguimiento->restore();
+
         return redirect()->route('seguimiento.index')->with('success', 'Seguimiento restaurado con éxito.');
     }
 }
