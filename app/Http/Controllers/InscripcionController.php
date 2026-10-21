@@ -61,11 +61,12 @@ class InscripcionController extends Controller
             'fecha_inscripcion' => ['required', 'date'],
         ]);
 
-        $yaInscrito = Inscripcion::where('miembro_id', $validated['miembro_id'])
+        $existente = Inscripcion::withTrashed()
+            ->where('miembro_id', $validated['miembro_id'])
             ->where('curso_id', $curso->id)
-            ->exists();
+            ->first();
 
-        if ($yaInscrito) {
+        if ($existente && ! $existente->trashed()) {
             return back()->with('error', 'El miembro ya está inscrito en este curso.');
         }
 
@@ -73,6 +74,19 @@ class InscripcionController extends Controller
 
         if ($inscritos >= $curso->cupo_max) {
             return back()->with('error', 'El curso alcanzó su cupo máximo de '.$curso->cupo_max.' inscritos.');
+        }
+
+        // Si la inscripción estaba borrada lógicamente se reactiva: conserva
+        // su historial de pagos y evita chocar con el índice UNIQUE.
+        if ($existente) {
+            $existente->restore();
+            $existente->update([
+                'fecha_inscripcion' => $validated['fecha_inscripcion'],
+                'estado' => 'Activo',
+            ]);
+
+            return redirect()->route('inscripciones.gestion', $curso->id)
+                ->with('success', 'Se reactivó la inscripción existente.');
         }
 
         Inscripcion::create($validated + [

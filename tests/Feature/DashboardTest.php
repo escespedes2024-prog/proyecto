@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\PermisosPorRolSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,13 +21,17 @@ class DashboardTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $rol = Role::create([
-            'nombre' => $nombreRol,
-            'estado' => 'Activo',
-            'nivel_acceso' => 3,
-        ]);
+        $rol = Role::firstOrCreate(
+            ['nombre' => $nombreRol],
+            ['estado' => 'Activo', 'nivel_acceso' => 3]
+        );
 
         $user->roles()->attach($rol->id);
+
+        // Los roles creados dentro del test no pasan por la migración que
+        // siembra permisos; se aplican aquí para reproducir el escenario real.
+        (new PermisosPorRolSeeder)->sembrarPara($rol);
+        $user->limpiarPermisos();
 
         return $user;
     }

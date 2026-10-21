@@ -8,6 +8,7 @@ use App\Models\Egreso;
 use App\Models\Ingreso;
 use App\Models\Miembro;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
 {
@@ -82,7 +83,10 @@ class ReporteController extends Controller
         $desde = $request->input('desde', now()->startOfMonth()->toDateString());
         $hasta = $request->input('hasta', now()->endOfMonth()->toDateString());
 
-        $ingresos = Ingreso::whereBetween('fecha', [$desde, $hasta])->get();
+        $ingresos = Ingreso::with('pagoCurso')
+            ->conPago()
+            ->whereBetween(DB::raw(Ingreso::SQL_FECHA), [$desde, $hasta])
+            ->get();
         $egresos = Egreso::whereBetween('fecha', [$desde, $hasta])->get();
 
         $totalIngresos = $ingresos->sum('monto_total');

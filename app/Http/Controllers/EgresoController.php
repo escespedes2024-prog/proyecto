@@ -12,7 +12,7 @@ class EgresoController extends Controller
 {
     public function saldoDisponible(?int $ignorarId = null): float
     {
-        $totalIngresos = Ingreso::sum('monto_total');
+        $totalIngresos = Ingreso::total();
         $totalEgresos = Egreso::sum('monto');
 
         if ($ignorarId) {
@@ -27,7 +27,7 @@ class EgresoController extends Controller
         $egresos = Egreso::with('contrato')->paginate(10);
 
         $totales = [
-            'ingresos' => Ingreso::sum('monto_total'),
+            'ingresos' => Ingreso::total(),
             'egresos' => Egreso::sum('monto'),
         ];
         $totales['balance'] = $totales['ingresos'] - $totales['egresos'];

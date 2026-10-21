@@ -25,9 +25,9 @@ use App\Http\Controllers\SesionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Ruta de inicio muestra la bienvenida; si ya está autenticado va al dashboard
+// Sistema interno: la raíz siempre lleva al login o al dashboard.
 Route::get('/', function () {
-    return auth()->check() ? redirect()->route('dashboard') : view('welcome');
+    return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
 });
 
 // Rutas de Autenticación (Invitados) — el envío del formulario va limitado

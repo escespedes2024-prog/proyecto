@@ -15,7 +15,6 @@ class Asistencia extends Model
     protected $fillable = [
         'miembro_id',
         'sesion_id',
-        'user_id',
         'estado',
         'observacion',
     ];
@@ -28,11 +27,6 @@ class Asistencia extends Model
     public function miembro(): BelongsTo
     {
         return $this->belongsTo(Miembro::class, 'miembro_id');
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function curso()

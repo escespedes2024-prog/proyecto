@@ -50,5 +50,8 @@ class DatabaseSeeder extends Seeder
         if (! $adminUser->roles()->where('role_id', $adminRole->id)->exists()) {
             $adminUser->roles()->attach($adminRole->id);
         }
+
+        // Permisos por rol (idempotente).
+        $this->call(PermisosPorRolSeeder::class);
     }
 }

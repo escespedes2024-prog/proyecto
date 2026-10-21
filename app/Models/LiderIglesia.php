@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -32,9 +33,14 @@ class LiderIglesia extends Model
         return $this->hasMany(Culto::class, 'id_lider_iglesia');
     }
 
-    public function egresos(): HasMany
+    public function egresos(): HasManyThrough
     {
-        return $this->hasMany(Egreso::class, 'id_lider_iglesia');
+        return $this->hasManyThrough(
+            Egreso::class,
+            Contrato::class,
+            'id_lider_iglesia',
+            'id_contrato'
+        );
     }
 
     public function ministerios(): MorphMany

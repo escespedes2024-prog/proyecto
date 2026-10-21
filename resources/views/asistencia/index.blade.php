@@ -72,7 +72,6 @@
                     <th>Sesión / Tema</th>
                     <th>Fecha</th>
                     <th>Estado</th>
-                    <th>Registrado Por</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -95,7 +94,6 @@
                                 <div style="font-size: 12px; color: var(--text-secondary);">{{ $asistencia->observacion }}</div>
                             @endif
                         </td>
-                        <td>{{ $asistencia->user->name ?? 'N/A' }}</td>
                         <td>
                             <div class="action-buttons">
                                 @if(auth()->user()->puede('asistencia', 'crear'))
@@ -112,7 +110,7 @@
                 
 @empty
                     <tr>
-                        <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                        <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 30px;">
                             No hay registros de asistencia.
                         </td>
                     </tr>

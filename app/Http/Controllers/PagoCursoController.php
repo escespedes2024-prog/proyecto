@@ -40,12 +40,10 @@ class PagoCursoController extends Controller
                 $validated + ['registrado_por' => auth()->id()]
             );
 
-            // El pago aparece automáticamente en el módulo de Ingresos
+            // El pago aparece automáticamente en Ingresos.
+            // Opción A: no se copian monto, fecha ni método; se leen del pago con COALESCE.
             $pago->ingreso()->create([
-                'monto_total' => $pago->monto,
-                'fecha' => $pago->fecha_pago,
                 'tipo' => 'Inscripción Curso: '.$inscripcion->curso->nombre,
-                'metodo_pago' => $pago->metodo_pago,
             ]);
         });
 

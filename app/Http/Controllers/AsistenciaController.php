@@ -14,7 +14,7 @@ class AsistenciaController extends Controller
 {
     public function index(Request $request)
     {
-        $asistencias = Asistencia::with(['miembro', 'sesion.curso', 'user'])
+        $asistencias = Asistencia::with(['miembro', 'sesion.curso'])
             ->join('sesiones', 'asistencias_sesion.sesion_id', '=', 'sesiones.id')
             ->select('asistencias_sesion.*')
             ->when($request->filled('q'), fn ($q) => $q->whereHas('miembro', fn ($m) => $m->where('nombre', 'like', '%'.$request->q.'%')))
@@ -44,7 +44,6 @@ class AsistenciaController extends Controller
                 $valores = [
                     'estado' => $datos['estado'],
                     'observacion' => $datos['observacion'] ?? null,
-                    'user_id' => auth()->id(),
                 ];
 
                 Asistencia::updateOrCreate(
@@ -68,7 +67,7 @@ class AsistenciaController extends Controller
             foreach ($inscritos as $miembroId) {
                 Asistencia::updateOrCreate(
                     ['sesion_id' => $sesion->id, 'miembro_id' => $miembroId],
-                    ['estado' => 'Presente', 'user_id' => auth()->id()]
+                    ['estado' => 'Presente']
                 );
             }
         });

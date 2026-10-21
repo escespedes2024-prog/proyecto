@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Docente;
 use App\Models\Miembro;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class DocenteController extends Controller
 {
@@ -25,11 +26,28 @@ class DocenteController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_miembro' => 'required|exists:miembros,id|unique:docentes,id_miembro',
+            'id_miembro' => [
+                'required',
+                'exists:miembros,id',
+                Rule::unique('docentes', 'id_miembro')->whereNull('deleted_at'),
+            ],
             'especialidad' => 'required|string|max:255',
             'titulo' => 'nullable|string|max:255',
             'activo' => 'boolean',
         ]);
+
+        $docente = Docente::withTrashed()
+            ->where('id_miembro', $validated['id_miembro'])
+            ->first();
+
+        // Un docente borrado lógicamente se reactiva en lugar de duplicarse.
+        if ($docente) {
+            $docente->restore();
+            $docente->update($validated);
+
+            return redirect()->route('docentes.index')
+                ->with('success', 'Se reactivó el docente existente.');
+        }
 
         Docente::create($validated);
 
