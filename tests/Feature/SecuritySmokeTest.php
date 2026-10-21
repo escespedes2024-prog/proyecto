@@ -55,15 +55,17 @@ class SecuritySmokeTest extends TestCase
         $this->get('/dashboard')->assertRedirect(self::ROUTE_LOGIN);
     }
 
-    public function test_registro_publico_deshabilitado(): void
+    public function test_el_registro_publico_no_existe(): void
     {
-        $this->get('/register')->assertForbidden();
+        // El sistema es interno: los usuarios solo se crean desde /users.
+        $this->get('/register')->assertNotFound();
+
         $this->post('/register', [
             'name' => 'Intruso',
             'email' => 'intruso@test.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
-        ])->assertForbidden();
+        ])->assertNotFound();
     }
 
     public function test_administrador_accede_a_todo(): void

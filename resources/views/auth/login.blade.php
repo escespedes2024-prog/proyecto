@@ -69,11 +69,5 @@
             Iniciar Sesión
         </button>
     </form>
-
-    <div class="auth-links">
-        @if($registrationOpen)
-            ¿No tienes una cuenta? <a href="{{ route('register') }}">Regístrate aquí</a>
-        @endif
-    </div>
 </div>
 @endsection
